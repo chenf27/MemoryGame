@@ -19,6 +19,7 @@ namespace Engine
 
         public void CreateBoard(int i_numOfCols, int i_numOfRows)
         {
+            int check;
             
         }
 
