@@ -13,26 +13,55 @@ namespace Engine
         private HumanPlayer m_HumanPlayer;
         private HumanPlayer? m_2ndHumanPlayer = null;
         private ComputerPlayer? m_ComputerPlayer = null;
-        //private BoardSlot[,] m_GamePiece;
         private string m_winnerName;
         private bool m_isWinner = false;
 
-        public void CreateBoard(int i_numOfCols, int i_numOfRows)
+        public string WinnerName
         {
-
-
+            get
+            {
+                if (m_isWinner)
+                {
+                    return m_winnerName;
+                }
+                else
+                {
+                    throw new Exception("The game has not ended yet!");
+                }
+            }
+            set
+            {
+                m_winnerName = value;
+                m_isWinner = true;
+            }
         }
 
-        public Board Board 
+        public bool IsWinner
+        {
+            get;
+        }
+
+        public Board Board
         {
             get { return m_Board; }
             set { m_Board = value; }
         }
-            
+
+        public void CreateBoard(int i_numOfRows, int i_numOfCols)
+        {
+            m_Board = new Board(i_numOfRows, i_numOfCols);
+        }
 
         public void CreatePlayer(string i_name, bool i_isHuman)
         {
-
+            if(i_isHuman)
+            {
+                m_2ndHumanPlayer = new HumanPlayer(i_name);
+            }
+            else
+            {
+                m_ComputerPlayer = new ComputerPlayer(0);
+            }
         }
 
         public HumanPlayer Human
@@ -46,8 +75,5 @@ namespace Engine
             get { return (ComputerPlayer)m_ComputerPlayer; }
             set { m_ComputerPlayer = value; }
         }
-
-
-
     }
 }

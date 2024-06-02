@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Engine;
 using MemoryGameEngine;
+using Ex02.ConsoleUtils;
 
 namespace UI
 {
@@ -27,8 +28,8 @@ namespace UI
             Console.WriteLine("Enter the size of the board, the size need to be between 4 and 6 but can't be overall of odd slots (5X5 is illegal)");
             while (!validInputFromUser)
             {
-                numOfColsFromUser = GetValidFrameForBoard("Enter the number of columns (4-6): ");
                 numOfRowsFromUser = GetValidFrameForBoard("Enter the number of rows (4-6): ");
+                numOfColsFromUser = GetValidFrameForBoard("Enter the number of columns (4-6): ");
                 if (numOfColsFromUser == 5 && numOfRowsFromUser == 5)
                 {
                     Console.WriteLine("Invalid number. Must be an even number of slots.");
@@ -39,8 +40,7 @@ namespace UI
                 }
             }
 
-
-            m_manager.CreateBoard(numOfColsFromUser, numOfRowsFromUser);
+            m_manager.CreateBoard(numOfRowsFromUser, numOfColsFromUser);
 
         }
         
@@ -117,9 +117,10 @@ Please enter your name:");
 
            while(m_manager.Board.NumOfPairsLeftInBoard > 0)
            {
-                m_manager.Board.PrintBoard();
+                Screen.Clear();
+                PrintBoard();
                 validInput = false;
-                if (turn % 2 != 0 && !object.Equals(m_manager.Computer,null))
+                if (turn % 2 != 0 && !object.Equals(m_manager.Computer, null))
                 {
                     m_manager.Computer.turn();
                 }
@@ -134,9 +135,9 @@ Please enter your name:");
                         col = char.ToUpper(col);
                         firstSlot[0] = col - 'A' + 1;
 
-                        if (int.TryParse(slot + 1, out row))
+                        if (int.TryParse(slot[1].ToString(), out row))
                         {
-                            firstSlot[0] = col - 'A' + 1;
+                            //firstSlot[0] = col - 'A' + 1;
                             firstSlot[1] = row;
                             if (isInFrame(row, m_manager.Board.NumOfRowsInBoard) && isValidCol(m_manager.Board.NumOfColsInBoard, col))
                             {
@@ -151,7 +152,6 @@ Please enter your name:");
                                 {
                                     Console.WriteLine("Invalid input, The slot you selected was already flipped");
                                 }
-
                             }
                         }
           
@@ -162,7 +162,7 @@ Please enter your name:");
                     }
                 }
                 turn++;
-
+                //System.Threading.Thread.Sleep(2000);
            }
 
         }
@@ -216,10 +216,59 @@ Please enter your name:");
 
             return i_Char >= 'A' && i_Char <= upperLimiterChar;
         }
+        
         private bool isInFrame(int i_Range, int i_UserInput)
         {
             return i_UserInput >= 1 && i_UserInput <= i_Range;
         }
 
+        public void PrintBoard()
+        {
+            int numOfRowsInBoard = m_manager.Board.NumOfRowsInBoard;
+            int numOfColsInBoard = m_manager.Board.NumOfColsInBoard;
+
+            Console.Write("   ");
+            for (int i = 0; i < numOfColsInBoard; i++)
+            {
+                char letter = (char)('A' + i);
+                Console.Write(@"  {0} ", letter);
+            }
+
+            Console.WriteLine();
+            PrintPanelPartition(numOfColsInBoard);
+
+            for (int i = 0; i < numOfRowsInBoard; i++)
+            {
+                Console.Write(@" {0} ", i + 1);
+                Console.Write("|");
+                for (int j = 0; j < numOfColsInBoard; j++)
+                {
+                    if (m_manager.Board.IsSpotTaken(i, j))
+                    {
+                        Console.Write(@" {0} ", m_manager.Board.SlotContent(i, j));
+                    }
+                    else
+                    {
+                        Console.Write("   ");
+                    }
+                    Console.Write("|");
+                }
+                //Console.Write("|");
+                Console.WriteLine();
+                PrintPanelPartition(numOfColsInBoard);
+            }
+        }
+
+        public static void PrintPanelPartition(int i_numOfCols)
+        {
+            int lengthToPrint = i_numOfCols * 4 + 1;
+            Console.Write("   ");
+            for (int i = 0; i < lengthToPrint; i++)
+            {
+                Console.Write("=");
+            }
+            Console.WriteLine();
+
+        }
     }
 }

@@ -11,20 +11,43 @@ namespace MemoryGameEngine
         private readonly int r_NumOfColsInBoard;
         private readonly int r_NumOfRowsInBoard;
         private BoardSlot[,] m_Board;
-        private readonly char[] r_Chars; //TODO
         private readonly int r_NumOfPairsAtTheStartOfTheGame;
         private int m_NumOfPairsLeftInBoard;
         public const int k_MaxFrameSize = 6;
         public const int k_MinFrameSize = 4;
 
-        public Board(int numOfColsInBoard, int NumOfRowsInBoard, BoardSlot[,] board, int numOfPairsAtStartOfTheGame) 
+        private struct BoardSlot
         {
-            r_NumOfColsInBoard = numOfColsInBoard;
-            r_NumOfRowsInBoard = NumOfRowsInBoard;
-            m_Board = board;
-            r_NumOfPairsAtTheStartOfTheGame = numOfPairsAtStartOfTheGame;
-            m_NumOfPairsLeftInBoard = numOfPairsAtStartOfTheGame;
+            private readonly char r_CardInSlot;
+            private bool m_CardFlippedByPlayer;
+
+            public BoardSlot(char i_CardInSlot)
+            {
+                r_CardInSlot = i_CardInSlot;
+                m_CardFlippedByPlayer = false;
+            }
+
+            public char CardInSlot
+            {
+                get { return r_CardInSlot; }
+            }
+
+            public bool CardFlippedByPlayer
+            {
+                get { return m_CardFlippedByPlayer; }
+                set { m_CardFlippedByPlayer = value; }
+            }
         }
+
+        public Board(int i_numOfRowsInBoard, int i_numOfColsInBoard) 
+        {
+            r_NumOfRowsInBoard = i_numOfRowsInBoard;
+            r_NumOfColsInBoard = i_numOfColsInBoard;
+            m_Board = new BoardSlot[i_numOfRowsInBoard, i_numOfColsInBoard];
+            r_NumOfPairsAtTheStartOfTheGame = (i_numOfRowsInBoard * i_numOfColsInBoard) / 2;
+            m_NumOfPairsLeftInBoard = r_NumOfPairsAtTheStartOfTheGame;
+        }
+
         public int NumOfColsInBoard
         {
             get { return r_NumOfColsInBoard; }
@@ -48,60 +71,19 @@ namespace MemoryGameEngine
             set { m_NumOfPairsLeftInBoard = value;}
         }
 
-        public void PrintBoard()
-        {
-            int colFrame = this.m_Board.GetLength(1);
-            
-
-            for (int i = 0; i < colFrame; i++)
-            {
-                char letter = (char)('A' +  i);
-                Console.Write(" " + letter);
-            }
-
-            Console.WriteLine();
-
-            PrintPanelPartition(colFrame);
-
-            
-
-            for (int i = 0 ;i < this.m_Board.GetLength(0); i++)
-            {
-                Console.Write(i+1);
-                Console.Write("|");
-                for (int j = 0; j < this.m_Board.GetLength(1); j++)
-                {
-                    if (this.m_Board[i,j].CardFlippedByPlayer)
-                    {
-                        Console.Write(this.m_Board[i,j].CardInSlot);
-                    }
-                    else
-                    {
-                        Console.Write(" ");
-                    }
-                    Console.Write("|");
-                }
-                Console.Write(" |");
-                Console.WriteLine();
-
-                PrintPanelPartition(colFrame);
-
-            }
-
-        }
-
-        public static void PrintPanelPartition(int size)
-        {
-            for (int i = 0; i < size; i++)
-            {
-                Console.Write("===");
-            }
-            Console.WriteLine();
-
-        }
         public void ReduceNumOfPairsLeftInBoard()
         {
             this.NumOfPairsLeftInBoard--;
+        }
+
+        public bool IsSpotTaken(int i_i, int i_j)
+        {
+            return m_Board[i_i, i_j].CardFlippedByPlayer;
+        }
+
+        public char SlotContent(int i_i, int i_j)
+        {
+            return m_Board[i_i, i_j].CardInSlot;
         }
     }
 }

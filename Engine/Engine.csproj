@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
-    <Compile Include="BoardSlot.cs" />
     <Compile Include="ComputerPlayer.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="HumanPlayer.cs" />
