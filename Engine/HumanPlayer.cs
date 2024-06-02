@@ -28,6 +28,10 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
+        public void Turn()
+        {
+            
+        }
 
     }
 }

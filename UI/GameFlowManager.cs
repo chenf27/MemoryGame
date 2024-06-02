@@ -107,9 +107,17 @@ Please enter your name:");
         public void PlayGame()
         {
            int turn = 0;
+           bool validInput = false;
+
+
            while(m_manager.Board.NumOfPairsLeftInBoard > 0)
            {
-
+                m_manager.Board.PrintBoard();
+                if (turn % 2 == 0)
+                {
+                    Console.WriteLine("Please enter the slot you would like to flip");
+                }
+                turn++;
 
            }
 

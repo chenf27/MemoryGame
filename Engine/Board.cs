@@ -48,9 +48,9 @@ namespace MemoryGameEngine
             set { m_NumOfPairsLeftInBoard = value;}
         }
 
-        public static void PrintBoard(BoardSlot[,] i_board)
+        public void PrintBoard()
         {
-            int colFrame = i_board.GetLength(1);
+            int colFrame = this.m_Board.GetLength(1);
             
 
             for (int i = 0; i < colFrame; i++)
@@ -65,15 +65,15 @@ namespace MemoryGameEngine
 
             
 
-            for (int i = 0 ;i < i_board.GetLength(0); i++)
+            for (int i = 0 ;i < this.m_Board.GetLength(0); i++)
             {
                 Console.Write(i+1);
                 Console.Write("|");
-                for (int j = 0; j < i_board.GetLength(1); j++)
+                for (int j = 0; j < this.m_Board.GetLength(1); j++)
                 {
-                    if (i_board[i,j].CardFlippedByPlayer)
+                    if (this.m_Board[i,j].CardFlippedByPlayer)
                     {
-                        Console.Write(i_board[i,j].CardInSlot);
+                        Console.Write(this.m_Board[i,j].CardInSlot);
                     }
                     else
                     {
