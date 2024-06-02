@@ -19,13 +19,35 @@ namespace Engine
 
         public void CreateBoard(int i_numOfCols, int i_numOfRows)
         {
-            int check;
-            
+
+
         }
+
+        public Board Board 
+        {
+            get { return m_Board; }
+            set { m_Board = value; }
+        }
+            
 
         public void CreatePlayer(string i_name, bool i_isHuman)
         {
 
         }
+
+        public HumanPlayer Human
+        {
+            get { return m_HumanPlayer; }
+            set { m_HumanPlayer = value; }
+        }
+
+        public ComputerPlayer Computer
+        {
+            get { return (ComputerPlayer)m_ComputerPlayer; }
+            set { m_ComputerPlayer = value; }
+        }
+
+
+
     }
 }

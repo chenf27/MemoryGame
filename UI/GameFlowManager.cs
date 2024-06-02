@@ -106,15 +106,12 @@ Please enter your name:");
 
         public void PlayGame()
         {
-            /*while (m_manager.NumOfPairsLeftInBoard > 0)
-            {
-                m_HumanPlayer.PlayerName();
-                if (m_2ndHumanPlayer)
-                {
-                }
+           int turn = 0;
+           while(m_manager.Board.NumOfPairsLeftInBoard > 0)
+           {
 
 
-            }*/
+           }
 
         }
 
