@@ -28,9 +28,10 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public void Turn()
+        public bool Turn(int i_Col, int i_Row)
         {
-            
+
+            return true;
         }
 
     }

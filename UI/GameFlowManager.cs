@@ -11,8 +11,9 @@ namespace UI
     internal class GameFlowManager
     {
         private GameManager m_manager = new GameManager();
+        private const char k_Exit = 'Q';
 
-       public void GameSetUp()
+        public void GameSetUp()
         {
             SetPlayersInfo();
             SetStartingBoard();
@@ -106,21 +107,118 @@ Please enter your name:");
 
         public void PlayGame()
         {
-           int turn = 0;
-           bool validInput = false;
-
+            int turn = 0;
+            bool validInput = false;
+            string slot;
+            char col;
+            int row;
+            int[] firstSlot = new int[2];
+           
 
            while(m_manager.Board.NumOfPairsLeftInBoard > 0)
            {
                 m_manager.Board.PrintBoard();
+                validInput = false;
+                if (turn % 2 != 0 && !object.Equals(m_manager.Computer,null))
+                {
+                    m_manager.Computer.turn();
+                }
+
                 if (turn % 2 == 0)
                 {
-                    Console.WriteLine("Please enter the slot you would like to flip");
+                    Console.WriteLine("Please enter the slot you would like to flip (Format: A2)");
+                    while (!validInput)
+                    {
+                        slot = Console.ReadLine();
+                        col = slot[0];
+                        col = char.ToUpper(col);
+                        firstSlot[0] = col - 'A' + 1;
+
+                        if (int.TryParse(slot + 1, out row))
+                        {
+                            firstSlot[0] = col - 'A' + 1;
+                            firstSlot[1] = row;
+                            if (isInFrame(row, m_manager.Board.NumOfRowsInBoard) && isValidCol(m_manager.Board.NumOfColsInBoard, col))
+                            {
+                                if (m_manager.Human.Turn(col - 'A' + 1, row))
+                                {
+                                    firstSlot[0] = col - 'A' + 1;
+                                    firstSlot[1] = row;
+
+                                    validInput = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid input, The slot you selected was already flipped");
+                                }
+
+                            }
+                        }
+          
+                        else
+                        {
+                            Console.WriteLine("Invalid input, Please enter a col and row in the correct format");
+                        }
+                    }
                 }
                 turn++;
 
            }
 
+        }
+
+        private int[] getPlayerChoice()
+        {
+            int[] playersSlot = new int[2];
+            bool validInput = false;
+            string slot;
+            char col;
+           
+
+            Console.WriteLine("Please enter the slot you would like to flip (Format: A2)");
+            while (!validInput)
+            {
+                slot = Console.ReadLine();
+                col = slot[0];
+                col = char.ToUpper(col);
+                playersSlot[0] = col - 'A' + 1;
+                if (!int.TryParse(slot + 1, out playersSlot[1]) || char.IsLetter(col))
+                {
+                    Console.WriteLine("Format error! Please enter a slot in the selected format.");
+                }
+
+                else if(isInFrame(m_manager.Board.NumOfRowsInBoard, playersSlot[1]) && isInFrame(m_manager.Board.NumOfColsInBoard, playersSlot[0])) 
+                {
+                    if (!m_manager.Human.Turn(playersSlot[0] , playersSlot[1]))
+                    {
+                        Console.WriteLine("Invalid input, The slot you selected was already flipped");
+                    }
+                    else
+                    {
+                        validInput = true;
+                    }
+                }
+
+                else
+                {
+                    Console.WriteLine("Invalid input, The slot you selected wasn't in range");
+                }
+            }
+
+
+
+            return playersSlot;
+        }
+
+        private bool isValidCol(int i_Range, char i_Char)
+        {
+            char upperLimiterChar = (char)('A' + i_Range - 1);
+
+            return i_Char >= 'A' && i_Char <= upperLimiterChar;
+        }
+        private bool isInFrame(int i_Range, int i_UserInput)
+        {
+            return i_UserInput >= 1 && i_UserInput <= i_Range;
         }
 
     }

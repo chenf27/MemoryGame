@@ -20,5 +20,11 @@ namespace MemoryGameEngine
             get { return m_numOfPairs; }
             set { m_numOfPairs = value; }
         }
+
+        public void turn()
+        {
+
+        }
+
     }
 }
