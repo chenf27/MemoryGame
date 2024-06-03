@@ -44,6 +44,8 @@ namespace MemoryGameEngine
             r_NumOfRowsInBoard = i_numOfRowsInBoard;
             r_NumOfColsInBoard = i_numOfColsInBoard;
             m_Board = new BoardSlot[i_numOfRowsInBoard, i_numOfColsInBoard];
+            m_Board[0,0] = new BoardSlot('A'); //for checkkksssss
+            m_Board[0,1] = new BoardSlot('A'); //for checkkksssss
             r_NumOfPairsAtTheStartOfTheGame = (i_numOfRowsInBoard * i_numOfColsInBoard) / 2;
             m_NumOfPairsLeftInBoard = r_NumOfPairsAtTheStartOfTheGame;
         }
@@ -84,6 +86,11 @@ namespace MemoryGameEngine
         public char SlotContent(int i_i, int i_j)
         {
             return m_Board[i_i, i_j].CardInSlot;
+        }
+
+        public void FlipSlot(int i_i, int i_j)
+        {
+            m_Board[i_i,i_j].CardFlippedByPlayer = !m_Board[i_i,i_j].CardFlippedByPlayer;
         }
     }
 }

@@ -28,10 +28,24 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public bool Turn(int i_Col, int i_Row)
+        public void Turn(int[,] i_playersSelectedSlots, Board io_Board)
         {
+            char firstSlotContent;
+            char secondSlotContent;
 
-            return true;
+            firstSlotContent = io_Board.SlotContent(i_playersSelectedSlots[0,0], i_playersSelectedSlots[0,1]);
+            secondSlotContent = io_Board.SlotContent(i_playersSelectedSlots[1,0], i_playersSelectedSlots[1,1]);
+            if (firstSlotContent == secondSlotContent)
+            {
+                m_numOfPairs++;
+                io_Board.NumOfPairsLeftInBoard--;
+            }
+
+            else
+            {
+                io_Board.FlipSlot(i_playersSelectedSlots[0,0], i_playersSelectedSlots[0,1]);
+                io_Board.FlipSlot(i_playersSelectedSlots[1,0], i_playersSelectedSlots[1,1]);
+            }
         }
 
     }

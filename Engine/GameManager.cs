@@ -16,6 +16,12 @@ namespace Engine
         private string m_winnerName;
         private bool m_isWinner = false;
 
+        public void FindWinner()
+        {
+            string winner;
+            
+
+        }
         public string WinnerName
         {
             get
@@ -70,9 +76,9 @@ namespace Engine
             set { m_HumanPlayer = value; }
         }
 
-        public ComputerPlayer Computer
+        public ComputerPlayer? Computer
         {
-            get { return (ComputerPlayer)m_ComputerPlayer; }
+            get { return m_ComputerPlayer; }
             set { m_ComputerPlayer = value; }
         }
     }
