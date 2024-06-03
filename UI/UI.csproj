@@ -46,9 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\Engine.csproj">
-      <Project>{704d2962-128f-4966-8668-11f952ecc61e}</Project>
-      <Name>Engine</Name>
+    <ProjectReference Include="..\Controller\Controller.csproj">
+      <Project>{b8baa489-75d0-4fd1-8d78-0e6de034a8b8}</Project>
+      <Name>Controller</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

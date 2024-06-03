@@ -40,7 +40,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComputerPlayerController.cs" />
     <Compile Include="GameManager.cs" />
+    <Compile Include="GameManagerController.cs" />
+    <Compile Include="HumanPlayerController.cs" />
+    <Compile Include="MemoryGameController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj">
+      <Project>{704d2962-128f-4966-8668-11f952ecc61e}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

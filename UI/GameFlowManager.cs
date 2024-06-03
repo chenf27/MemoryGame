@@ -74,9 +74,10 @@ namespace UI
 Welcome to our Memory Game!!!
 Please enter your name:");
             name = Console.ReadLine();
-
             //m_manager.CreatePlayer(name, true); //TODO CREATE PLAYER? create controller with gameManager and then use it to create players
             //m_manager.FirstHumanPlayer = new HumanPlayer(name);
+            m_controller.AddHumanPlayer(name);
+
             Console.WriteLine("For Player vs Player press 1, for Player vs Computer press 2: ");
             while (!validInputFromUser)
             {
@@ -119,48 +120,51 @@ Please enter your name:");
         {
             int turn = 0;
             bool foundPair;
-            SpotOnBoard firstSpot, secondSpot;
+            //SpotOnBoard firstSpot, secondSpot;
+            int[] firstSpot = new int[2];
+            int[] secondSpot = new int[2];
 
-            while (m_manager.Board.NumOfPairsLeftInBoard > 0)
+            //while (m_manager.Board.NumOfPairsLeftInBoard > 0)
+            while (m_controller.GameManagerController.NumberOfPairsLeftInBoard > 0)
             {
                 foundPair = false;
-                Screen.Clear();     //TODO create function that calls Screen.Clear() and printBoard()
-                printBoard();
-                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard); //TODO DELETE LATER
-                if (turn % 2 != 0 && m_manager.Computer != null)
+
+                clearScreenAndPrintBoard();
+                Console.WriteLine(m_controller.GameManagerController.NumberOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for debugging
+                /*if (turn % 2 != 0 && m_manager.Computer != null)
                 {
                     Console.WriteLine("Computer's turn: ");
                     foundPair = m_manager.Computer.Value.turn();
                 }
-                else
+                else*/
                 {
-                    if (turn % 2 == 0) //TODO append player's name as format (use variable)
+                    /*if (turn % 2 == 0) //TODO append player's name as format (use variable)
                     {
                         Console.Write(m_manager.FirstHumanPlayer.PlayerName);
                     }
                     else
                     {
                         Console.Write(m_manager.SecondHumanPlayer.Value.PlayerName);
-                    }
+                    }*/
 
                     Console.WriteLine("'s turn: ");
                     firstSpot = getPlayerChoice();
-                    m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);
-                    Screen.Clear();
-                    printBoard();
+                    //m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);
+                    m_controller.GameManagerController.FlipSlot(firstSpot);
+                    clearScreenAndPrintBoard();
                     secondSpot = getPlayerChoice();
-                    m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
-                    Screen.Clear();
-                    printBoard();
+                    //m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
+                    m_controller.GameManagerController.FlipSlot(secondSpot);
+                    clearScreenAndPrintBoard();
                     System.Threading.Thread.Sleep(2000);
-                    if (turn % 2 == 0)      //TODO switch to bool?
+                    /*if (turn % 2 == 0)      //TODO switch to bool?
                     {
                         foundPair = m_manager.FirstHumanPlayer.Turn(firstSpot, secondSpot, m_manager.Board);
                     }
                     else
                     {
                         foundPair = m_manager.SecondHumanPlayer.Value.Turn(firstSpot, secondSpot, m_manager.Board);
-                    }
+                    }*/
                 }
 
                 if (!foundPair)
@@ -170,12 +174,19 @@ Please enter your name:");
             }
         }
 
-        private SpotOnBoard getPlayerChoice()
+        private void clearScreenAndPrintBoard()
+        {
+            Screen.Clear();
+            printBoard();
+        }
+
+        private int[] getPlayerChoice()
         {
             bool validInput = false;
             string slot;
             char selectedColAsChar, selectedRowAsChar;
-            SpotOnBoard spotOnBoard = new SpotOnBoard();
+            //SpotOnBoard spotOnBoard = new SpotOnBoard();
+            int[] spotOnBoard = new int[2];
             
             Console.WriteLine("Please enter the slot you would like to flip (Format: A2)");
             while (!validInput)
@@ -194,12 +205,14 @@ Please enter your name:");
                 }
                 else
                 {
-                    spotOnBoard.Row = selectedRowAsChar - '0' - 1;
+                    //spotOnBoard.Row = selectedRowAsChar - '0' - 1;
+                    spotOnBoard[0] = selectedRowAsChar - '0' - 1;
                     selectedColAsChar = char.ToUpper(selectedColAsChar);
-                    spotOnBoard.Col = selectedColAsChar - 'A';
-                    if (isInFrame(m_manager.Board.NumOfRowsInBoard, spotOnBoard.Row) && isInFrame(m_manager.Board.NumOfColsInBoard, spotOnBoard.Col))
+                    //spotOnBoard.Col = selectedColAsChar - 'A';
+                    spotOnBoard[1] = selectedColAsChar - 'A';
+                    if (isInFrame(m_controller.GameManagerController.NumberOfRowsInBoard, spotOnBoard[0]) && isInFrame(m_controller.GameManagerController.NumberOfColsInBoard, spotOnBoard[1]))
                     {
-                        if (m_manager.Board.IsSpotTaken(spotOnBoard.Row, spotOnBoard.Col))
+                        if (m_controller.GameManagerController.IsSpotTaken(spotOnBoard))
                         {
                             Console.WriteLine("Input Error!, The slot you selected was already flipped");
                         }
@@ -231,8 +244,9 @@ Please enter your name:");
 
         private void printBoard() //TODO change i and j to row and col
         {
-            int numOfRowsInBoard = m_manager.Board.NumOfRowsInBoard;
-            int numOfColsInBoard = m_manager.Board.NumOfColsInBoard;
+            int numOfRowsInBoard = m_controller.GameManagerController.NumberOfRowsInBoard;
+            int numOfColsInBoard = m_controller.GameManagerController.NumberOfColsInBoard;
+            int[] spotToCheck = new int[2];
 
             Console.Write("   ");
             for (int i = 0; i < numOfColsInBoard; i++)
@@ -244,15 +258,18 @@ Please enter your name:");
             Console.WriteLine();
             printPanelPartition(numOfColsInBoard);
 
-            for (int i = 0; i < numOfRowsInBoard; i++)
+            for (int rowIndex = 0; rowIndex < numOfRowsInBoard; rowIndex++)
             {
-                Console.Write(@" {0} ", i + 1);
+                Console.Write(@" {0} ", rowIndex + 1);
                 Console.Write("|");
-                for (int j = 0; j < numOfColsInBoard; j++)
+                for (int colIndex = 0; colIndex < numOfColsInBoard; colIndex++)
                 {
-                    if (m_manager.Board.IsSpotTaken(i, j))
+                    spotToCheck[0] = rowIndex;
+                    spotToCheck[1] = colIndex;
+
+                    if (m_controller.GameManagerController.IsSpotTaken(spotToCheck))
                     {
-                        Console.Write(@" {0} ", m_manager.Board.SlotContent(i, j));
+                        Console.Write(@" {0} ", m_controller.GameManagerController.SlotContent(spotToCheck));
                     }
                     else
                     {

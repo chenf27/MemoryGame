@@ -22,22 +22,22 @@
             set { m_numOfPairs = value; }
         }
 
-        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board i_Board)
         {
             bool foundPair = false;
-            char firstSlotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
-            char secondSlotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
+            char firstSlotContent = i_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            char secondSlotContent = i_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
  
             if (firstSlotContent == secondSlotContent)
             {
                 m_numOfPairs++;
-                io_Board.NumOfPairsLeftInBoard--;
+                i_Board.NumOfPairsLeftInBoard--;
                 foundPair = true;
             }
             else
             {
-                io_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Col);
-                io_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Col);
+                i_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Col);
+                i_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Col);
             }
 
             return foundPair;

@@ -4,9 +4,9 @@
     {
         private int m_numOfPairs;
 
-        public ComputerPlayer(int numOfPairs = 0)
+        public ComputerPlayer(int i_numOfPairs = 0)
         {
-            m_numOfPairs = numOfPairs;
+            m_numOfPairs = i_numOfPairs;
         }
 
         public int NumOfPairs
@@ -15,7 +15,7 @@
             set { m_numOfPairs = value; }
         }
 
-        public bool turn()
+        public bool turn(Board i_board) //TODO: inplement function
         {
             return false;
         }
