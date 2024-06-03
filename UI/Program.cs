@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UI;
 
 namespace MemoryGameEngine
@@ -26,7 +22,7 @@ namespace MemoryGameEngine
                 gameFlowManager.PlayGame();
                 gameFlowManager.FinishGame();
                 Console.WriteLine(@"Please select from the options below:
-1 - Another game
+1 - Play another game
 Else - Exit");
                 if (int.TryParse(Console.ReadLine(), out userInput))
                 {

@@ -1,9 +1,4 @@
-﻿using Engine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace MemoryGameEngine
 {
@@ -14,8 +9,6 @@ namespace MemoryGameEngine
         private BoardSlot[,] m_Board;
         private readonly int r_NumOfPairsAtTheStartOfTheGame;
         private int m_NumOfPairsLeftInBoard;
-        public const int k_MaxFrameSize = 6;
-        public const int k_MinFrameSize = 4;
 
         private struct BoardSlot
         {
@@ -58,6 +51,47 @@ namespace MemoryGameEngine
             m_Board[0,1] = new BoardSlot('A'); //for checkkksssss
             r_NumOfPairsAtTheStartOfTheGame = (i_numOfRowsInBoard * i_numOfColsInBoard) / 2;
             m_NumOfPairsLeftInBoard = r_NumOfPairsAtTheStartOfTheGame;
+        }
+
+        public void InitializeBoard()
+        {
+            int totalSlotsInBoard = r_NumOfRowsInBoard * r_NumOfColsInBoard;
+            char[] cardsDeck = new char[totalSlotsInBoard];
+            char cardSymbol = 'A';
+
+            for (int i = 0; i < r_NumOfPairsAtTheStartOfTheGame; i++)
+            {
+                cardsDeck[2 * i] = cardSymbol;
+                cardsDeck[2 * i + 1] = cardSymbol;
+                cardSymbol++;
+            }
+
+            ShuffleDeckOfCards(cardsDeck);
+
+            for(int rowIndex = 0, cardsDeckIndex = 0; rowIndex < r_NumOfRowsInBoard; rowIndex++)
+            {
+                for(int colIndex = 0; colIndex < r_NumOfColsInBoard; colIndex++)
+                {
+                    m_Board[rowIndex, colIndex] = new BoardSlot(cardsDeck[cardsDeckIndex]);
+                    cardsDeckIndex++;
+                }
+            }
+        }
+
+        private void ShuffleDeckOfCards(char[] io_array)
+        {
+            Random random = new Random();
+            int arrayLength = io_array.Length;
+            char temporaryCardSymbol;
+            int randomIndex;
+
+            while (arrayLength > 1)
+            {
+                randomIndex = random.Next(arrayLength--);
+                temporaryCardSymbol = io_array[arrayLength];
+                io_array[arrayLength] = io_array[randomIndex];
+                io_array[randomIndex] = temporaryCardSymbol;
+            }
         }
 
         public int NumOfColsInBoard

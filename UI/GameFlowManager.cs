@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Engine;
 using MemoryGameEngine;
+using Controller;
 using Ex02.ConsoleUtils;
 
 namespace UI
 {
     internal class GameFlowManager
     {
-        private GameManager m_manager = new GameManager();
+        //private GameManager m_manager = new GameManager();
+        private const int k_numOfPlayers = 2;
+        public const int k_MinFrameSize = 4;
+        public const int k_MaxFrameSize = 6;
         private const char k_Exit = 'Q';
+        private MemoryGameController m_controller = new MemoryGameController(k_numOfPlayers);
 
         public void GameSetUp()
         {
@@ -40,24 +40,25 @@ namespace UI
                 }
             }
 
-            m_manager.CreateBoard(numOfRowsFromUser, numOfColsFromUser);
-
+            //m_manager.CreateAndInitializeBoard(numOfRowsFromUser, numOfColsFromUser);
+            m_controller.GameManagerController.CreateAndInitializeBoard(numOfRowsFromUser, numOfColsFromUser);
         }
         
         private int GetValidFrameForBoard(string i_prompt)
         {
             int inputFromUser = 0;
             bool validInputFromUser = false;
+
             while (!validInputFromUser)
             {
                 Console.Write(i_prompt);
-                if (int.TryParse(Console.ReadLine(), out inputFromUser) && inputFromUser >= Board.k_MinFrameSize && inputFromUser <= Board.k_MaxFrameSize)
+                if (int.TryParse(Console.ReadLine(), out inputFromUser) && inputFromUser >= k_MinFrameSize && inputFromUser <= k_MaxFrameSize)
                 {
                     validInputFromUser = true;
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid input. Please enter a number between {Board.k_MinFrameSize} and {Board.k_MaxFrameSize}.");
+                    Console.WriteLine($"Invalid input. Please enter a number between {k_MinFrameSize} and {k_MaxFrameSize}.");
                 }
             }
             return inputFromUser;
@@ -74,8 +75,8 @@ Welcome to our Memory Game!!!
 Please enter your name:");
             name = Console.ReadLine();
 
-            //m_manager.CreatePlayer(name, true); //CREATE PLAYER?
-            m_manager.FirstHumanPlayer = new HumanPlayer(name);
+            //m_manager.CreatePlayer(name, true); //TODO CREATE PLAYER? create controller with gameManager and then use it to create players
+            //m_manager.FirstHumanPlayer = new HumanPlayer(name);
             Console.WriteLine("For Player vs Player press 1, for Player vs Computer press 2: ");
             while (!validInputFromUser)
             {
@@ -86,7 +87,7 @@ Please enter your name:");
                     if (choice == 1)
                     {
                         Console.WriteLine("Please enter the name of the player: ");
-                        name = name = Console.ReadLine();
+                        name = Console.ReadLine();
                     }
                     else if (choice != 2)
                     {
@@ -96,7 +97,15 @@ Please enter your name:");
 
                     if (validInputFromUser)
                     {
-                        m_manager.CreatePlayer(name, isHumanPlayer);
+                        //m_manager.CreatePlayer(name, isHumanPlayer);
+                        if (isHumanPlayer)
+                        {
+                            m_controller.AddHumanPlayer(name);
+                        }
+                        else
+                        {
+                            m_controller.AddComputerPlayer();
+                        }
                     }
                 }
                 else
@@ -111,13 +120,13 @@ Please enter your name:");
             int turn = 0;
             bool foundPair;
             SpotOnBoard firstSpot, secondSpot;
-            
+
             while (m_manager.Board.NumOfPairsLeftInBoard > 0)
             {
                 foundPair = false;
-                Screen.Clear();
-                PrintBoard();
-                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard); //DELETA LATER
+                Screen.Clear();     //TODO create function that calls Screen.Clear() and printBoard()
+                printBoard();
+                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard); //TODO DELETE LATER
                 if (turn % 2 != 0 && m_manager.Computer != null)
                 {
                     Console.WriteLine("Computer's turn: ");
@@ -125,7 +134,7 @@ Please enter your name:");
                 }
                 else
                 {
-                    if (turn % 2 == 0)
+                    if (turn % 2 == 0) //TODO append player's name as format (use variable)
                     {
                         Console.Write(m_manager.FirstHumanPlayer.PlayerName);
                     }
@@ -138,13 +147,13 @@ Please enter your name:");
                     firstSpot = getPlayerChoice();
                     m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);
                     Screen.Clear();
-                    PrintBoard();
+                    printBoard();
                     secondSpot = getPlayerChoice();
                     m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
                     Screen.Clear();
-                    PrintBoard();
-                    //System.Threading.Thread.Sleep(2000);
-                    if (turn % 2 == 0)
+                    printBoard();
+                    System.Threading.Thread.Sleep(2000);
+                    if (turn % 2 == 0)      //TODO switch to bool?
                     {
                         foundPair = m_manager.FirstHumanPlayer.Turn(firstSpot, secondSpot, m_manager.Board);
                     }
@@ -178,7 +187,7 @@ Please enter your name:");
                 }
 
                 selectedColAsChar = slot[0];
-                selectedRowAsChar = slot[1]; //NEED TO CHECK
+                selectedRowAsChar = slot[1]; //TODO add input validation in case of mismatching format (e.g. "a")
                 if (!char.IsDigit(slot[1]) || !char.IsLetter(selectedColAsChar))
                 {
                     Console.WriteLine("Format error! Please enter a slot in the selected format.");
@@ -220,7 +229,7 @@ Please enter your name:");
             return i_UserInput >= 0 && i_UserInput < i_Range;
         }
 
-        public void PrintBoard() //PRIVATE MAYBE?
+        private void printBoard() //TODO change i and j to row and col
         {
             int numOfRowsInBoard = m_manager.Board.NumOfRowsInBoard;
             int numOfColsInBoard = m_manager.Board.NumOfColsInBoard;
@@ -233,7 +242,7 @@ Please enter your name:");
             }
 
             Console.WriteLine();
-            PrintPanelPartition(numOfColsInBoard);
+            printPanelPartition(numOfColsInBoard);
 
             for (int i = 0; i < numOfRowsInBoard; i++)
             {
@@ -253,11 +262,11 @@ Please enter your name:");
                 }
                 //Console.Write("|");
                 Console.WriteLine();
-                PrintPanelPartition(numOfColsInBoard);
+                printPanelPartition(numOfColsInBoard);
             }
         } 
 
-        public static void PrintPanelPartition(int i_numOfCols)
+        private void printPanelPartition(int i_numOfCols)
         {
             int lengthToPrint = i_numOfCols * 4 + 1;
             Console.Write("   ");

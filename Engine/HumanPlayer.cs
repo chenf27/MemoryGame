@@ -1,11 +1,4 @@
-﻿using Engine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MemoryGameEngine
+﻿namespace MemoryGameEngine
 {
     public struct HumanPlayer
     {
@@ -29,14 +22,12 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board io_Board)
         {
-            char firstSlotContent;
-            char secondSlotContent;
-            bool foundPair;
-
-            firstSlotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
-            secondSlotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
+            bool foundPair = false;
+            char firstSlotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            char secondSlotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
+ 
             if (firstSlotContent == secondSlotContent)
             {
                 m_numOfPairs++;
@@ -47,7 +38,6 @@ namespace MemoryGameEngine
             {
                 io_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Col);
                 io_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Col);
-                foundPair = false;
             }
 
             return foundPair;
