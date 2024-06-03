@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Engine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,13 +30,22 @@ namespace MemoryGameEngine
 
             public char CardInSlot
             {
-                get { return r_CardInSlot; }
+                get 
+                {
+                    return r_CardInSlot;
+                }
             }
 
             public bool CardFlippedByPlayer
             {
-                get { return m_CardFlippedByPlayer; }
-                set { m_CardFlippedByPlayer = value; }
+                get
+                {
+                    return m_CardFlippedByPlayer;
+                }
+                set
+                {
+                    m_CardFlippedByPlayer = value;
+                }
             }
         }
 
@@ -52,45 +62,53 @@ namespace MemoryGameEngine
 
         public int NumOfColsInBoard
         {
-            get { return r_NumOfColsInBoard; }
-
+            get 
+            {
+                return r_NumOfColsInBoard;
+            }
         }
 
         public int NumOfRowsInBoard
         {
-            get { return r_NumOfRowsInBoard; } 
+            get
+            {
+                return r_NumOfRowsInBoard;
+            } 
         }
 
         public int NumOfPairsAtTheStartOfGame
         {
-            get { return r_NumOfPairsAtTheStartOfTheGame; }
+            get 
+            {
+                return r_NumOfPairsAtTheStartOfTheGame;
+            }
         }
 
         public int NumOfPairsLeftInBoard
         {
-            get { return m_NumOfPairsLeftInBoard; }
-
-            set { m_NumOfPairsLeftInBoard = value;}
+            get
+            {
+                return m_NumOfPairsLeftInBoard;
+            }
+            set 
+            {
+                m_NumOfPairsLeftInBoard = value;
+            }
         }
 
-        public void ReduceNumOfPairsLeftInBoard()
+        public bool IsSpotTaken(int i_Row, int i_Col)
         {
-            this.NumOfPairsLeftInBoard--;
+            return m_Board[i_Row, i_Col].CardFlippedByPlayer;
         }
 
-        public bool IsSpotTaken(int i_i, int i_j)
+        public char SlotContent(int i_Row, int i_Col)
         {
-            return m_Board[i_i, i_j].CardFlippedByPlayer;
+            return m_Board[i_Row, i_Col].CardInSlot;
         }
 
-        public char SlotContent(int i_i, int i_j)
+        public void FlipSlot(int i_Row, int i_Col)
         {
-            return m_Board[i_i, i_j].CardInSlot;
-        }
-
-        public void FlipSlot(int i_i, int i_j)
-        {
-            m_Board[i_i,i_j].CardFlippedByPlayer = !m_Board[i_i,i_j].CardFlippedByPlayer;
+            m_Board[i_Row, i_Col].CardFlippedByPlayer = !m_Board[i_Row, i_Col].CardFlippedByPlayer;
         }
     }
 }

@@ -15,15 +15,15 @@ namespace MemoryGameEngine
             m_numOfPairs = numOfPairs;
         }
 
-        public int CounterOfPairs
+        public int NumOfPairs
         {
             get { return m_numOfPairs; }
             set { m_numOfPairs = value; }
         }
 
-        public void turn()
+        public bool turn()
         {
-
+            return false;
         }
 
     }

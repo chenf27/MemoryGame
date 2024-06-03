@@ -74,7 +74,8 @@ Welcome to our Memory Game!!!
 Please enter your name:");
             name = Console.ReadLine();
 
-            m_manager.CreatePlayer(name, true);
+            //m_manager.CreatePlayer(name, true); //CREATE PLAYER?
+            m_manager.FirstHumanPlayer = new HumanPlayer(name);
             Console.WriteLine("For Player vs Player press 1, for Player vs Computer press 2: ");
             while (!validInputFromUser)
             {
@@ -108,49 +109,64 @@ Please enter your name:");
         public void PlayGame()
         {
             int turn = 0;
-            int[,] playersSelectedSlots = new int[2, 2];
-            int[] firstPlayerChoice = new int[2];
-            int[] secondPlayerChoice = new int[2];
+            bool foundPair;
+            SpotOnBoard firstSpot, secondSpot;
             
-
             while (m_manager.Board.NumOfPairsLeftInBoard > 0)
             {
+                foundPair = false;
                 Screen.Clear();
                 PrintBoard();
-                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard);
+                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard); //DELETA LATER
                 if (turn % 2 != 0 && m_manager.Computer != null)
                 {
-                    m_manager.Computer.Value.turn();
+                    Console.WriteLine("Computer's turn: ");
+                    foundPair = m_manager.Computer.Value.turn();
                 }
-
-                if (turn % 2 == 0)
+                else
                 {
-                    firstPlayerChoice = getPlayerChoice();
-                    playersSelectedSlots[0,0] = firstPlayerChoice[0];
-                    playersSelectedSlots[0,1] = firstPlayerChoice[1];
-                    m_manager.Board.FlipSlot(playersSelectedSlots[0,0], playersSelectedSlots[0,1]);
+                    if (turn % 2 == 0)
+                    {
+                        Console.Write(m_manager.FirstHumanPlayer.PlayerName);
+                    }
+                    else
+                    {
+                        Console.Write(m_manager.SecondHumanPlayer.Value.PlayerName);
+                    }
+
+                    Console.WriteLine("'s turn: ");
+                    firstSpot = getPlayerChoice();
+                    m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);
                     Screen.Clear();
                     PrintBoard();
-                    secondPlayerChoice = getPlayerChoice();
-                    playersSelectedSlots[1,0] = secondPlayerChoice[0];
-                    playersSelectedSlots[1,1] = secondPlayerChoice[1];
-                    m_manager.Board.FlipSlot(playersSelectedSlots[1, 0], playersSelectedSlots[1, 1]);
+                    secondSpot = getPlayerChoice();
+                    m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
                     Screen.Clear();
                     PrintBoard();
                     //System.Threading.Thread.Sleep(2000);
-                    m_manager.Human.Turn(playersSelectedSlots, m_manager.Board);
+                    if (turn % 2 == 0)
+                    {
+                        foundPair = m_manager.FirstHumanPlayer.Turn(firstSpot, secondSpot, m_manager.Board);
+                    }
+                    else
+                    {
+                        foundPair = m_manager.SecondHumanPlayer.Value.Turn(firstSpot, secondSpot, m_manager.Board);
+                    }
                 }
-                turn++;
-                
+
+                if (!foundPair)
+                {
+                    turn++;
+                }
             }
         }
 
-        private int[] getPlayerChoice()
+        private SpotOnBoard getPlayerChoice()
         {
             bool validInput = false;
             string slot;
             char selectedColAsChar, selectedRowAsChar;
-            int[] selectedSlot = new int[2];
+            SpotOnBoard spotOnBoard = new SpotOnBoard();
             
             Console.WriteLine("Please enter the slot you would like to flip (Format: A2)");
             while (!validInput)
@@ -160,6 +176,7 @@ Please enter your name:");
                 {
                     Environment.Exit(0);
                 }
+
                 selectedColAsChar = slot[0];
                 selectedRowAsChar = slot[1]; //NEED TO CHECK
                 if (!char.IsDigit(slot[1]) || !char.IsLetter(selectedColAsChar))
@@ -168,12 +185,12 @@ Please enter your name:");
                 }
                 else
                 {
-                    selectedSlot[0] = selectedRowAsChar - '0' - 1;
+                    spotOnBoard.Row = selectedRowAsChar - '0' - 1;
                     selectedColAsChar = char.ToUpper(selectedColAsChar);
-                    selectedSlot[1] = selectedColAsChar - 'A';
-                    if (isInFrame(m_manager.Board.NumOfRowsInBoard, selectedSlot[0]) && isInFrame(m_manager.Board.NumOfColsInBoard, selectedSlot[1]))
+                    spotOnBoard.Col = selectedColAsChar - 'A';
+                    if (isInFrame(m_manager.Board.NumOfRowsInBoard, spotOnBoard.Row) && isInFrame(m_manager.Board.NumOfColsInBoard, spotOnBoard.Col))
                     {
-                        if (m_manager.Board.IsSpotTaken(selectedSlot[0], selectedSlot[1]))
+                        if (m_manager.Board.IsSpotTaken(spotOnBoard.Row, spotOnBoard.Col))
                         {
                             Console.WriteLine("Input Error!, The slot you selected was already flipped");
                         }
@@ -189,7 +206,7 @@ Please enter your name:");
                 }   
             }
 
-            return selectedSlot;
+            return spotOnBoard;
         }
 
         public bool FinishGame()
@@ -203,7 +220,7 @@ Please enter your name:");
             return i_UserInput >= 0 && i_UserInput < i_Range;
         }
 
-        public void PrintBoard()
+        public void PrintBoard() //PRIVATE MAYBE?
         {
             int numOfRowsInBoard = m_manager.Board.NumOfRowsInBoard;
             int numOfColsInBoard = m_manager.Board.NumOfColsInBoard;
@@ -238,7 +255,7 @@ Please enter your name:");
                 Console.WriteLine();
                 PrintPanelPartition(numOfColsInBoard);
             }
-        }
+        } 
 
         public static void PrintPanelPartition(int i_numOfCols)
         {

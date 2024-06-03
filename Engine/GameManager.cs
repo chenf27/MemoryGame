@@ -18,9 +18,43 @@ namespace Engine
 
         public void FindWinner()
         {
-            string winner;
-            
+            bool foundWinner = true;
 
+            if (m_ComputerPlayer == null)
+            {
+                if (m_HumanPlayer.NumOfPairs > m_2ndHumanPlayer.Value.NumOfPairs)
+                {
+                    m_winnerName = m_HumanPlayer.PlayerName;
+                }
+                else if (m_HumanPlayer.NumOfPairs < m_2ndHumanPlayer.Value.NumOfPairs)
+                {
+                    m_winnerName = m_2ndHumanPlayer.Value.PlayerName;
+                }
+                else
+                {
+                    foundWinner = false;
+                }
+            }
+            else
+            {
+                if (m_HumanPlayer.NumOfPairs > m_ComputerPlayer.Value.NumOfPairs)
+                {
+                    m_winnerName = m_HumanPlayer.PlayerName;
+                }
+                else if (m_HumanPlayer.NumOfPairs < m_ComputerPlayer.Value.NumOfPairs)
+                {
+                    m_winnerName = "Computer";
+                }
+                else
+                {
+                    foundWinner = false;
+                }
+            }
+
+            if (!foundWinner)
+            {
+                m_winnerName = "Tie";
+            }
         }
         public string WinnerName
         {
@@ -60,7 +94,7 @@ namespace Engine
 
         public void CreatePlayer(string i_name, bool i_isHuman)
         {
-            if(i_isHuman)
+            if (i_isHuman)
             {
                 m_2ndHumanPlayer = new HumanPlayer(i_name);
             }
@@ -70,7 +104,7 @@ namespace Engine
             }
         }
 
-        public HumanPlayer Human
+        public HumanPlayer FirstHumanPlayer
         {
             get { return m_HumanPlayer; }
             set { m_HumanPlayer = value; }
@@ -80,6 +114,12 @@ namespace Engine
         {
             get { return m_ComputerPlayer; }
             set { m_ComputerPlayer = value; }
+        }
+
+        public HumanPlayer? SecondHumanPlayer
+        {
+            get { return m_2ndHumanPlayer; }
+            set { m_2ndHumanPlayer = value; }
         }
     }
 }

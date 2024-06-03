@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Engine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,25 +29,28 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public void Turn(int[,] i_playersSelectedSlots, Board io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board io_Board)
         {
             char firstSlotContent;
             char secondSlotContent;
+            bool foundPair;
 
-            firstSlotContent = io_Board.SlotContent(i_playersSelectedSlots[0,0], i_playersSelectedSlots[0,1]);
-            secondSlotContent = io_Board.SlotContent(i_playersSelectedSlots[1,0], i_playersSelectedSlots[1,1]);
+            firstSlotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            secondSlotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
             if (firstSlotContent == secondSlotContent)
             {
                 m_numOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
+                foundPair = true;
             }
-
             else
             {
-                io_Board.FlipSlot(i_playersSelectedSlots[0,0], i_playersSelectedSlots[0,1]);
-                io_Board.FlipSlot(i_playersSelectedSlots[1,0], i_playersSelectedSlots[1,1]);
+                io_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Col);
+                io_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Col);
+                foundPair = false;
             }
-        }
 
+            return foundPair;
+        }
     }
 }
