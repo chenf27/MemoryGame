@@ -21,7 +21,7 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public bool turn()
+        public bool Turn()
         {
             return false;
         }

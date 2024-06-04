@@ -94,32 +94,57 @@ namespace Engine
             m_Board = new Board(i_numOfRows, i_numOfCols);
         }
 
-        public void CreatePlayer(string i_name, bool i_isHuman)
+        public void CreatePlayer(string i_name, bool i_isHuman) //TODO FIX, NEED THE SIZE OF THE ARRAY UPFRONT AND STAM SHEM
         {
             int lenOfArr;
 
             if (i_isHuman)
             {
-                lenOfArr = m_HumanPlayer.Length;
-                m_HumanPlayer[lenOfArr] = new HumanPlayer(i_name);
+                if (m_HumanPlayer == null)
+                {
+                    lenOfArr = 0;
+                    m_HumanPlayer = new HumanPlayer[2];
+                }
+                else
+                {
+                    lenOfArr = m_HumanPlayer.GetLength(0);
+                }
+
+                m_HumanPlayer[1] = new HumanPlayer(i_name);
             }
             else
             {
-                lenOfArr = m_ComputerPlayer.Length;
+                if (m_ComputerPlayer == null)
+                {
+                    lenOfArr = 0;
+                    m_ComputerPlayer = new ComputerPlayer[lenOfArr];
+                }
+                else
+                {
+                    lenOfArr = m_ComputerPlayer.GetLength(0);
+                }   
+                
                 m_ComputerPlayer[lenOfArr] = new ComputerPlayer();
             }
         }
 
-        public HumanPlayer[] HumanPlayer
+        public HumanPlayer[] HumanPlayers
         {
             get { return m_HumanPlayer; }
             set { m_HumanPlayer = value; }
         }
 
-        public ComputerPlayer[] ComputerPlayer
+        public ComputerPlayer[] ComputerPlayers
         {
             get { return m_ComputerPlayer; }
             set { m_ComputerPlayer = value; }
         }
+
+        public void CreateAndInitializeBoard(int i_numOfRows, int i_numOfCols)
+        {
+            m_Board = new Board(i_numOfRows, i_numOfCols);
+            m_Board.InitializeBoard();
+        }
+
     }
 }
