@@ -10,9 +10,8 @@ namespace Engine
     public class GameManager
     {
         private Board m_Board;
-        private HumanPlayer m_HumanPlayer;
-        private HumanPlayer? m_2ndHumanPlayer = null;
-        private ComputerPlayer? m_ComputerPlayer = null;
+        private HumanPlayer[] m_HumanPlayer;
+        private ComputerPlayer[] m_ComputerPlayer = null;
         private string m_winnerName;
         private bool m_isWinner = false;
 
