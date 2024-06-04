@@ -104,6 +104,7 @@ namespace Engine
                 {
                     lenOfArr = 0;
                     m_HumanPlayer = new HumanPlayer[2];
+                    m_HumanPlayer[0] = new HumanPlayer(i_name);
                 }
                 else
                 {

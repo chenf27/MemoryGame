@@ -120,7 +120,7 @@ Please enter your name:");
 
                 clearScreenAndPrintBoard();
                 Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for debugging
-                if (turn % 2 != 0 && m_manager.HumanPlayers.Length == k_numOfPlayers)
+                if (turn % 2 != 0 && m_manager.HumanPlayers.Length != k_numOfPlayers)
                 {
                     Console.WriteLine("Computer's turn: ");
                     foundPair = m_manager.ComputerPlayers[k_FirstComputerPlayer].Turn();
