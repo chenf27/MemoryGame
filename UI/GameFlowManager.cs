@@ -7,7 +7,7 @@ namespace UI
 {
     internal class GameFlowManager
     {
-        private GameManager m_manager = new GameManager(k_numOfPlayers);
+        private GameManager m_manager = new GameManager();
         private const int k_numOfPlayers = 2;
         public const int k_MinFrameSize = 4;
         public const int k_MaxFrameSize = 6;
@@ -42,7 +42,7 @@ namespace UI
                 }
             }
 
-            m_manager.CreateAndInitializeBoard(numOfRowsFromUser, numOfColsFromUser);
+            m_manager.Board.CreateAndInitializeBoard(numOfRowsFromUser, numOfColsFromUser);
         }
 
         private int GetValidFrameForBoard(string i_prompt)
