@@ -11,6 +11,9 @@ namespace UI
         private const int k_numOfPlayers = 2;
         public const int k_MinFrameSize = 4;
         public const int k_MaxFrameSize = 6;
+        private const int k_FirstHumanPlayer = 0;
+        private const int k_SecondHumanPlayer = 1;
+        private const int k_FirstComputerPlayer = 0;
         private const char k_Exit = 'Q';
         private MemoryGameController m_controller = new MemoryGameController(k_numOfPlayers);
 
@@ -120,9 +123,7 @@ Please enter your name:");
         {
             int turn = 0;
             bool foundPair;
-            //SpotOnBoard firstSpot, secondSpot;
-            int[] firstSpot = new int[2];
-            int[] secondSpot = new int[2];
+            SpotOnBoard firstSpot, secondSpot;
 
             //while (m_manager.Board.NumOfPairsLeftInBoard > 0)
             while (m_controller.GameManagerController.NumberOfPairsLeftInBoard > 0)
@@ -131,21 +132,21 @@ Please enter your name:");
 
                 clearScreenAndPrintBoard();
                 Console.WriteLine(m_controller.GameManagerController.NumberOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for debugging
-                /*if (turn % 2 != 0 && m_manager.Computer != null)
+                if (turn % 2 != 0 && m_controller.HumanPlayers.Length == k_numOfPlayers)
                 {
                     Console.WriteLine("Computer's turn: ");
-                    foundPair = m_manager.Computer.Value.turn();
+                    foundPair = m_controller.ComputerPlayers[k_FirstComputerPlayer].turn(m_controller.GameManagerController.Board);
                 }
-                else*/
+                else
                 {
-                    /*if (turn % 2 == 0) //TODO append player's name as format (use variable)
+                    if (turn % 2 == 0) //TODO append player's name as format (use variable)
                     {
-                        Console.Write(m_manager.FirstHumanPlayer.PlayerName);
+                        //Console.Write(m_manager.FirstHumanPlayer.PlayerName);
                     }
                     else
                     {
-                        Console.Write(m_manager.SecondHumanPlayer.Value.PlayerName);
-                    }*/
+                        //Console.Write(m_manager.SecondHumanPlayer.Value.PlayerName);
+                    }
 
                     Console.WriteLine("'s turn: ");
                     firstSpot = getPlayerChoice();
@@ -157,14 +158,14 @@ Please enter your name:");
                     m_controller.GameManagerController.FlipSlot(secondSpot);
                     clearScreenAndPrintBoard();
                     System.Threading.Thread.Sleep(2000);
-                    /*if (turn % 2 == 0)      //TODO switch to bool?
+                    if (turn % 2 == 0)      //TODO switch to bool?
                     {
-                        foundPair = m_manager.FirstHumanPlayer.Turn(firstSpot, secondSpot, m_manager.Board);
+                        foundPair = m_controller.HumanPlayers[k_FirstHumanPlayer].Turn(firstSpot, secondSpot, m_controller.GameManagerController.Board);
                     }
                     else
                     {
-                        foundPair = m_manager.SecondHumanPlayer.Value.Turn(firstSpot, secondSpot, m_manager.Board);
-                    }*/
+                        foundPair = m_controller.HumanPlayers[k_SecondHumanPlayer].Turn(firstSpot, secondSpot, m_controller.GameManagerController.Board);
+                    }
                 }
 
                 if (!foundPair)
@@ -180,13 +181,12 @@ Please enter your name:");
             printBoard();
         }
 
-        private int[] getPlayerChoice()
+        private SpotOnBoard getPlayerChoice()
         {
             bool validInput = false;
             string slot;
             char selectedColAsChar, selectedRowAsChar;
-            //SpotOnBoard spotOnBoard = new SpotOnBoard();
-            int[] spotOnBoard = new int[2];
+            SpotOnBoard spotOnBoard = new SpotOnBoard();
             
             Console.WriteLine("Please enter the slot you would like to flip (Format: A2)");
             while (!validInput)
@@ -205,12 +205,10 @@ Please enter your name:");
                 }
                 else
                 {
-                    //spotOnBoard.Row = selectedRowAsChar - '0' - 1;
-                    spotOnBoard[0] = selectedRowAsChar - '0' - 1;
+                    spotOnBoard.Row = selectedRowAsChar - '0' - 1;
                     selectedColAsChar = char.ToUpper(selectedColAsChar);
-                    //spotOnBoard.Col = selectedColAsChar - 'A';
-                    spotOnBoard[1] = selectedColAsChar - 'A';
-                    if (isInFrame(m_controller.GameManagerController.NumberOfRowsInBoard, spotOnBoard[0]) && isInFrame(m_controller.GameManagerController.NumberOfColsInBoard, spotOnBoard[1]))
+                    spotOnBoard.Col = selectedColAsChar - 'A';
+                    if (isInFrame(m_controller.GameManagerController.NumberOfRowsInBoard, spotOnBoard.Row) && isInFrame(m_controller.GameManagerController.NumberOfColsInBoard, spotOnBoard.Col))
                     {
                         if (m_controller.GameManagerController.IsSpotTaken(spotOnBoard))
                         {
@@ -246,7 +244,7 @@ Please enter your name:");
         {
             int numOfRowsInBoard = m_controller.GameManagerController.NumberOfRowsInBoard;
             int numOfColsInBoard = m_controller.GameManagerController.NumberOfColsInBoard;
-            int[] spotToCheck = new int[2];
+            SpotOnBoard spotToCheck = new SpotOnBoard();
 
             Console.Write("   ");
             for (int i = 0; i < numOfColsInBoard; i++)
@@ -264,8 +262,8 @@ Please enter your name:");
                 Console.Write("|");
                 for (int colIndex = 0; colIndex < numOfColsInBoard; colIndex++)
                 {
-                    spotToCheck[0] = rowIndex;
-                    spotToCheck[1] = colIndex;
+                    spotToCheck.Row = rowIndex;
+                    spotToCheck.Col = colIndex;
 
                     if (m_controller.GameManagerController.IsSpotTaken(spotToCheck))
                     {

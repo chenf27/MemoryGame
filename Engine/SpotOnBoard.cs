@@ -2,8 +2,8 @@
 {
     public struct SpotOnBoard
     {
-        int m_Row;
-        int m_Col;
+        private int m_Row;
+        private int m_Col;
 
         public int Row
         { 

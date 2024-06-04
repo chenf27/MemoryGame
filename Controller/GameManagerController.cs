@@ -24,19 +24,19 @@ namespace Controller
             }
         }
 
-        public void FlipSlot(int[] i_spotToFlip)
+        public void FlipSlot(SpotOnBoard i_spotToFlip)
         {
-            Board.FlipSlot(i_spotToFlip[0], i_spotToFlip[1]);
+            Board.FlipSlot(i_spotToFlip.Row, i_spotToFlip.Col);
         }
 
-        public bool IsSpotTaken(int[] i_spotToCheck)
+        public bool IsSpotTaken(SpotOnBoard i_spotToCheck)
         {
-            return Board.IsSpotTaken(i_spotToCheck[0], i_spotToCheck[1]);
+            return Board.IsSpotTaken(i_spotToCheck.Row, i_spotToCheck.Col);
         }
 
-        public char SlotContent(int[] i_spotToCheck)
+        public char SlotContent(SpotOnBoard i_spotToCheck)
         {
-            return Board.SlotContent(i_spotToCheck[0], i_spotToCheck[1]);
+            return Board.SlotContent(i_spotToCheck.Row, i_spotToCheck.Col);
         }
 
         public int NumberOfRowsInBoard

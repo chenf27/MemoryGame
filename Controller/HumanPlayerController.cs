@@ -5,30 +5,27 @@ namespace Controller
 {
     public struct HumanPlayerController
     {
-        public HumanPlayer m_hunanPlayer;
+        private HumanPlayer m_humanPlayer;
 
         public HumanPlayerController(string i_name)
         {
-            m_hunanPlayer = new HumanPlayer(i_name);
+            m_humanPlayer = new HumanPlayer(i_name);
         }
 
         public string PlayerName
         {
-            get { return m_hunanPlayer.PlayerName; }
+            get { return m_humanPlayer.PlayerName; }
         }
 
         public int NumOfPairs
         {
-            get { return m_hunanPlayer.NumOfPairs; }
-            set { m_hunanPlayer.NumOfPairs = value; }
+            get { return m_humanPlayer.NumOfPairs; }
+            set { m_humanPlayer.NumOfPairs = value; }
         }
 
-        public bool turn(int[] i_firstSpot, int[] i_secondSpot, Board i_board)
+        public bool Turn(SpotOnBoard i_firstSpot, SpotOnBoard i_secondSpot, Board i_board)
         {
-            SpotOnBoard firstSpot = new SpotOnBoard(i_firstSpot[0], i_firstSpot[1]);
-            SpotOnBoard secondSpot = new SpotOnBoard(i_secondSpot[0], i_secondSpot[1]);
-
-            return m_hunanPlayer.Turn(firstSpot, secondSpot, i_board);
+            return m_humanPlayer.Turn(i_firstSpot, i_secondSpot, i_board);
         }
     }
 }
