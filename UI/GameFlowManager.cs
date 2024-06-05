@@ -7,7 +7,7 @@ namespace UI
 {
     internal class GameFlowManager
     {
-        private GameManager m_manager = new GameManager();
+        private GameManager m_manager = new GameManager(k_numOfPlayers);
         private const int k_numOfPlayers = 2;
         public const int k_MinFrameSize = 4;
         public const int k_MaxFrameSize = 6;
@@ -68,29 +68,37 @@ namespace UI
         private void SetPlayersInfo()
         {
             string name;
+            int computerPlayerLevel = 2; //TODO: delete the 2, we need to get the value from the user
+            int userChoice;
             bool validInputFromUser = false;
-            int choice;
-            bool isHumanPlayer;
+            bool isHumanPlayer = false;
 
             Console.WriteLine(@"Hello!
 Welcome to our Memory Game!!!
 Please enter your name:");
             name = Console.ReadLine();
-            m_manager.CreatePlayer(name, true); //TODO CHECK
+            m_manager.CreateHumanPlayer(name); 
 
             Console.WriteLine("For Player vs Player press 1, for Player vs Computer press 2: ");
             while (!validInputFromUser)
             {
-                if (int.TryParse(Console.ReadLine(), out choice))
+                if (int.TryParse(Console.ReadLine(), out userChoice))
                 {
                     validInputFromUser = true;
-                    isHumanPlayer = choice == 1;
-                    if (choice == 1)
+
+                    if (userChoice == 1)
                     {
                         Console.WriteLine("Please enter the name of the player: ");
                         name = Console.ReadLine();
+                        isHumanPlayer = true;
                     }
-                    else if (choice != 2)
+                    else if(userChoice == 2)
+                    {
+                        Console.WriteLine(@"Please enter the computer's level
+Enter 1 for easy, 2 for medium and 3 for hard:");
+                        //take input from user and parse it to int. no need to verify range, if it's not between 1 and 3 then its medium by default
+                    }
+                    else
                     {
                         Console.WriteLine("Invalid Input!! the number should be either 1 or 2");
                         validInputFromUser = false;
@@ -98,7 +106,15 @@ Please enter your name:");
 
                     if (validInputFromUser)
                     {
-                        m_manager.CreatePlayer(name, isHumanPlayer); //TODO SENDS STAM SHEM
+                        if(isHumanPlayer)
+                        {
+                            m_manager.CreateHumanPlayer(name); //TODO SENDS STAM SHEM
+                        }
+                        else
+                        {
+
+                            m_manager.CreateComputerPlayer(computerPlayerLevel);
+                        }
                     }
                 }
                 else

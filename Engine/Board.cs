@@ -148,5 +148,25 @@ namespace MemoryGameEngine
             m_Board[i_Row, i_Col].CardFlippedByPlayer = !m_Board[i_Row, i_Col].CardFlippedByPlayer;
         }
 
+        public SpotOnBoard GenerateRandomUnflippedSpotOnBoard()
+        {
+            List<SpotOnBoard> unflippedSpotsOnBoard = new List<SpotOnBoard>();
+            Random randomIndexGenerator = new Random();
+
+            for(int rowIndex = 0; rowIndex < NumOfRowsInBoard; rowIndex++)
+            {
+                for(int colIndex = 0; colIndex < NumOfColsInBoard; colIndex++)
+                {
+                    if (!(m_Board[rowIndex, colIndex].CardFlippedByPlayer))
+                    {
+                        unflippedSpotsOnBoard.Add(new SpotOnBoard(rowIndex, colIndex));
+                    }
+                }
+            }
+
+            int randomIndex = randomIndexGenerator.Next(0, unflippedSpotsOnBoard.Count);
+
+            return unflippedSpotsOnBoard.ElementAt(randomIndex);
+        }
     }
 }

@@ -12,7 +12,35 @@ namespace MemoryGameEngine
     {
         private int m_numOfPairs;
         private List<BrainCell> m_Brain;
-        //TODO IMPLENT ENUM LEVEL
+        private eComputerPlayerLevel m_CoputerLevel;
+        
+        private enum eComputerPlayerLevel 
+        {
+            Easy, 
+            Medium,
+            Hard
+        }
+
+        public ComputerPlayer(int i_Difficulty)
+        {
+            m_numOfPairs = 0;
+            m_Brain = new List<BrainCell>();
+            switch (i_Difficulty)
+            {
+                case 1:
+                    m_CoputerLevel = eComputerPlayerLevel.Easy;
+                    break;
+                case 2:
+                    m_CoputerLevel = eComputerPlayerLevel.Medium;
+                    break;
+                case 3:
+                    m_CoputerLevel = eComputerPlayerLevel.Hard;
+                    break;
+                default:
+                    m_CoputerLevel = eComputerPlayerLevel.Medium;
+                    break;
+            }
+        }
 
         public struct BrainCell
         {
@@ -65,6 +93,7 @@ namespace MemoryGameEngine
             return spotOnBoard;
 
         }
+
         public SpotOnBoard FindPair(char i_content, Board i_Board)
         {
             SpotOnBoard spotOnBoard = new SpotOnBoard ();
@@ -90,12 +119,7 @@ namespace MemoryGameEngine
 
             return spotOnBoard;
         }
-        public ComputerPlayer(int i_numOfPairs = 0)
-        {
-            m_numOfPairs = i_numOfPairs;
-            m_Brain = new List<BrainCell>();
-        }
-
+ 
         public int NumOfPairs
         {
             get { return m_numOfPairs; }
