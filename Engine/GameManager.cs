@@ -10,15 +10,15 @@ namespace Engine
     public class GameManager<T>
     {
         private Board<T> m_Board;
-        private HumanPlayer[] m_HumanPlayers;
-        private ComputerPlayer[] m_ComputerPlayers;
+        private HumanPlayer<T>[] m_HumanPlayers;
+        private ComputerPlayer<T>[] m_ComputerPlayers;
         private int m_HumanPlayersCount = 0;
         private int m_ComputerPlayersCount = 0;
 
         public GameManager(int i_NumberOfPlayers)
         {
-            m_HumanPlayers = new HumanPlayer[i_NumberOfPlayers];
-            m_ComputerPlayers = new ComputerPlayer[i_NumberOfPlayers];
+            m_HumanPlayers = new HumanPlayer<T>[i_NumberOfPlayers];
+            m_ComputerPlayers = new ComputerPlayer<T>[i_NumberOfPlayers];
         }
 
         public Board<T> Board
@@ -34,21 +34,21 @@ namespace Engine
 
         public void CreateHumanPlayer(string i_name)
         {
-            m_HumanPlayers[m_HumanPlayersCount++] = new HumanPlayer(i_name);
+            m_HumanPlayers[m_HumanPlayersCount++] = new HumanPlayer<T>(i_name);
         }
 
         public void CreateComputerPlayer(int i_Difficulty)
         {
-            m_ComputerPlayers[m_ComputerPlayersCount++] = new ComputerPlayer(i_Difficulty);
+            m_ComputerPlayers[m_ComputerPlayersCount++] = new ComputerPlayer<T>(i_Difficulty);
         }
 
-        public HumanPlayer[] HumanPlayers
+        public HumanPlayer<T>[] HumanPlayers
         {
             get { return m_HumanPlayers; }
             set { m_HumanPlayers = value; }
         }
 
-        public ComputerPlayer[] ComputerPlayers
+        public ComputerPlayer<T>[] ComputerPlayers
         {
             get { return m_ComputerPlayers; }
             set { m_ComputerPlayers = value; }

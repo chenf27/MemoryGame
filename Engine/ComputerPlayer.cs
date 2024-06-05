@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemoryGameEngine
 {
-    public struct ComputerPlayer
+    public struct ComputerPlayer<T>
     {
         private int m_numOfPairs;
         private List<BrainCell> m_Brain;
@@ -27,10 +27,6 @@ namespace MemoryGameEngine
             get { return m_ComputerLevel; }
             set { m_ComputerLevel = value; }
         }
-
-
-
-
 
         public ComputerPlayer(int i_Difficulty)
         {
@@ -56,9 +52,9 @@ namespace MemoryGameEngine
         public struct BrainCell
         {
             private SpotOnBoard m_spotOnBoard;
-            private char m_CardContent;
+            private T m_CardContent;
 
-            public BrainCell (SpotOnBoard i_SpotOnBoard, char i_CardContent)
+            public BrainCell (SpotOnBoard i_SpotOnBoard, T i_CardContent)
             {
                 m_spotOnBoard = i_SpotOnBoard;
                 m_CardContent = i_CardContent;
@@ -76,7 +72,7 @@ namespace MemoryGameEngine
                 }
             }
 
-            public char CardContent
+            public T CardContent
             {
                 get
                 {
@@ -90,13 +86,13 @@ namespace MemoryGameEngine
             }
         }
 
-        public void AddBrainCell(SpotOnBoard i_SpotOnBoard, char i_content)
+        public void AddBrainCell(SpotOnBoard i_SpotOnBoard, T i_content)
         {
             bool alreadyInBrain = false;
 
             foreach(BrainCell cell in m_Brain)
             {
-                if (cell.CardContent == i_content && i_SpotOnBoard.Equals(cell.SpotOnBoard))
+                if (cell.CardContent.Equals(i_content) && i_SpotOnBoard.Equals(cell.SpotOnBoard))
                 {
                     alreadyInBrain = true;
                     break;
@@ -116,15 +112,15 @@ namespace MemoryGameEngine
 
         }
 
-        public SpotOnBoard FindPair(char i_content, Board<char> i_Board)
+        public SpotOnBoard FindPair(SpotOnBoard i_SpotOnBoard, Board<T> i_Board)
         {
             SpotOnBoard spotOnBoard = new SpotOnBoard ();
             bool foundPair = false;
-            char content = i_Board.SlotContent(i_SpotOnBoard.Row, i_SpotOnBoard.Col);
+            T content = i_Board.SlotContent(i_SpotOnBoard.Row, i_SpotOnBoard.Col);
 
             foreach(BrainCell cell in m_Brain)
             {
-                if(content == cell.CardContent && !cell.SpotOnBoard.Equals(i_SpotOnBoard))
+                if(content.Equals(cell.CardContent) && !cell.SpotOnBoard.Equals(i_SpotOnBoard))
                 {
                     spotOnBoard = cell.SpotOnBoard;
                     foundPair = true;
@@ -161,15 +157,15 @@ namespace MemoryGameEngine
                 m_Brain = value;
             }
         }
-        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board<T> io_Board)
         {
-            char firstSpotContent;
-            char secondSpotContent;
+            T firstSpotContent;
+            T secondSpotContent;
             bool foundPair;
 
             firstSpotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
             secondSpotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
-            if (firstSpotContent == secondSpotContent)
+            if (firstSpotContent.Equals(secondSpotContent))
             {
                 m_numOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
@@ -188,7 +184,7 @@ namespace MemoryGameEngine
 
         public bool HasAPairInBrain(ref SpotOnBoard o_FirstSpot, ref SpotOnBoard o_SecondSpot)
         {
-            Dictionary<char, int> contentCount = new Dictionary<char, int>();
+            Dictionary<T, int> contentCount = new Dictionary<T, int>();
             BrainCell indexForFirstOccurence = new BrainCell();
             bool foundPair = false;
 
@@ -202,7 +198,7 @@ namespace MemoryGameEngine
                     {
                         for (int j = 0; j < i; j++)
                         {
-                            if (m_Brain[j].CardContent == currentCell.CardContent)
+                            if (m_Brain[j].CardContent.Equals(currentCell.CardContent))
                             {
                                 indexForFirstOccurence = m_Brain[j];
                                 o_FirstSpot = m_Brain[j].SpotOnBoard;

@@ -147,7 +147,7 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                 if (turn % 2 != 0)
                 {
                     //Console.WriteLine("Computer's turn: ");
-                    if (m_manager.ComputerPlayers[k_FirstComputerPlayer].ComputerLevel == ComputerPlayer.eComputerPlayerLevel.Easy)
+                    if (m_manager.ComputerPlayers[k_FirstComputerPlayer].ComputerLevel == ComputerPlayer<char>.eComputerPlayerLevel.Easy)
                     {
                         firstSpot = m_manager.Board.GenerateRandomUnflippedSpotOnBoard();
                         m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);

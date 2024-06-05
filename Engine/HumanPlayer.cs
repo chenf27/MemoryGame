@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MemoryGameEngine
 {
-    public struct HumanPlayer
+    public struct HumanPlayer<T>
     {
         private readonly string r_PlayerName;
         private int m_numOfPairs;
@@ -29,15 +29,15 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board<char> io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board<T> io_Board)
         {
-            char firstSlotContent;
-            char secondSlotContent;
+            T firstSlotContent;
+            T secondSlotContent;
             bool foundPair;
 
             firstSlotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
             secondSlotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
-            if (firstSlotContent == secondSlotContent)
+            if (firstSlotContent.Equals(secondSlotContent))
             {
                 m_numOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
