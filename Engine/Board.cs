@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MemoryGameEngine
 {
-    public class Board
+    public class Board<T>
     {
         private readonly int r_NumOfColsInBoard;
         private readonly int r_NumOfRowsInBoard;
@@ -17,16 +17,16 @@ namespace MemoryGameEngine
 
         private struct BoardSlot
         {
-            private readonly char r_CardInSlot;
+            private readonly T r_CardInSlot;
             private bool m_CardFlippedByPlayer;
 
-            public BoardSlot(char i_CardInSlot)
+            public BoardSlot(T i_CardInSlot)
             {
                 r_CardInSlot = i_CardInSlot;
                 m_CardFlippedByPlayer = false;
             }
 
-            public char CardInSlot
+            public T CardInSlot
             {
                 get
                 {
@@ -56,17 +56,15 @@ namespace MemoryGameEngine
             m_NumOfPairsLeftInBoard = r_NumOfPairsAtTheStartOfTheGame;
         }
 
-        public void InitializeBoard()
+        public void InitializeBoard(T[] i_ElementsForBoard)
         {
             int totalSlotsInBoard = r_NumOfRowsInBoard * r_NumOfColsInBoard;
-            char[] cardsDeck = new char[totalSlotsInBoard];
-            char cardSymbol = 'A';
+            T[] cardsDeck = new T[totalSlotsInBoard];
 
             for (int i = 0; i < r_NumOfPairsAtTheStartOfTheGame; i++)
             {
-                cardsDeck[2 * i] = cardSymbol;
-                cardsDeck[2 * i + 1] = cardSymbol;
-                cardSymbol++;
+                cardsDeck[2 * i] = i_ElementsForBoard[i];
+                cardsDeck[2 * i + 1] = i_ElementsForBoard[i];
             }
 
             ShuffleDeckOfCards(cardsDeck);
@@ -81,11 +79,11 @@ namespace MemoryGameEngine
             }
         }
 
-        private void ShuffleDeckOfCards(char[] io_array)
+        private void ShuffleDeckOfCards(T[] io_array)
         {
             Random random = new Random();
             int arrayLength = io_array.Length;
-            char temporaryCardSymbol;
+            T temporaryCardSymbol;
             int randomIndex;
 
             while (arrayLength > 1)
@@ -138,7 +136,7 @@ namespace MemoryGameEngine
             return m_Board[i_Row, i_Col].CardFlippedByPlayer;
         }
 
-        public char SlotContent(int i_Row, int i_Col)
+        public T SlotContent(int i_Row, int i_Col)
         {
             return m_Board[i_Row, i_Col].CardInSlot;
         }

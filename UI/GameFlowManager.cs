@@ -7,7 +7,7 @@ namespace UI
 {
     internal class GameFlowManager
     {
-        private GameManager m_manager = new GameManager(k_numOfPlayers);
+        private GameManager<char> m_manager = new GameManager<char>(k_numOfPlayers);
         private const int k_numOfPlayers = 2;
         public const int k_MinFrameSize = 4;
         public const int k_MaxFrameSize = 6;
@@ -18,6 +18,7 @@ namespace UI
 
         public void GameSetUp()
         {
+            Screen.Clear();
             SetPlayersInfo();
             SetStartingBoard();
         }
@@ -26,6 +27,12 @@ namespace UI
         {
             int numOfColsFromUser = 0, numOfRowsFromUser = 0;
             bool validInputFromUser = false;
+            char[] elementsForBoard = new char[26];
+
+            for (int i = 0; i < 26; i++)
+            {
+                elementsForBoard[i] = (char)('A' + i);
+            }
 
             Console.WriteLine("Enter the size of the board, the size need to be between 4 and 6 but can't be overall of odd slots (5X5 is illegal)");
             while (!validInputFromUser)
@@ -42,7 +49,7 @@ namespace UI
                 }
             }
 
-            m_manager.CreateAndInitializeBoard(numOfRowsFromUser, numOfColsFromUser);
+            m_manager.CreateAndInitializeBoard(elementsForBoard, numOfRowsFromUser, numOfColsFromUser);
         }
 
         private int GetValidFrameForBoard(string i_prompt)

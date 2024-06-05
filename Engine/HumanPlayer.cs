@@ -29,7 +29,7 @@ namespace MemoryGameEngine
             set { m_numOfPairs = value; }
         }
 
-        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board<char> io_Board)
         {
             char firstSlotContent;
             char secondSlotContent;

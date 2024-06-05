@@ -85,7 +85,7 @@ namespace MemoryGameEngine
             m_Brain.Add(cell);
         }
 
-        public SpotOnBoard GetComputerChoice(Board i_Board)
+        public SpotOnBoard GetComputerChoice(Board<char> i_Board)
         {
             //TODO IMPLENT TO FIND A RANDOM EMPTY SPOT ON BOARD AND ADD IT TO THE BRAIN
             SpotOnBoard spotOnBoard = new SpotOnBoard();
@@ -94,7 +94,7 @@ namespace MemoryGameEngine
 
         }
 
-        public SpotOnBoard FindPair(char i_content, Board i_Board)
+        public SpotOnBoard FindPair(char i_content, Board<char> i_Board)
         {
             SpotOnBoard spotOnBoard = new SpotOnBoard ();
             bool foundPair = false;
