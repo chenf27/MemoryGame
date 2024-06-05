@@ -168,8 +168,8 @@ namespace Engine
 
         public void EndUnsuccsessfulTurn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot)
         {
-            m_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Row);
-            m_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Row);
+            m_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Col);
+            m_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Col);
         }
     }
 }

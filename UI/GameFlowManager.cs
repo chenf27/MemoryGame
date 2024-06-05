@@ -96,6 +96,7 @@ Please enter your name:");
                     {
                         Console.WriteLine(@"Please enter the computer's level
 Enter 1 for easy, 2 for medium and 3 for hard:");
+                        int.TryParse(Console.ReadLine(), out computerPlayerLevel);
                         //take input from user and parse it to int. no need to verify range, if it's not between 1 and 3 then its medium by default
                     }
                     else
@@ -136,10 +137,29 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
 
                 clearScreenAndPrintBoard();
                 Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for debugging
-                if (turn % 2 != 0 && m_manager.HumanPlayers.Length != k_numOfPlayers)
+                if (turn % 2 != 0)
                 {
-                    Console.WriteLine("Computer's turn: ");
-                    foundPair = m_manager.ComputerPlayers[k_FirstComputerPlayer].Turn();
+                    //Console.WriteLine("Computer's turn: ");
+                    if (m_manager.ComputerPlayers[k_FirstComputerPlayer].ComputerLevel == ComputerPlayer.eComputerPlayerLevel.Easy)
+                    {
+                        firstSpot = m_manager.Board.GenerateRandomUnflippedSpotOnBoard();
+                        m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);
+                        secondSpot = m_manager.Board.GenerateRandomUnflippedSpotOnBoard();
+                    }
+                    else 
+                    {
+                       // foundPair = m_manager.ComputerPlayers[k_FirstComputerPlayer].HasAPairInBrain(ref firstSpot,ref secondSpot);
+                        if (!foundPair)
+                        {
+                            firstSpot = m_manager.Board.GenerateRandomUnflippedSpotOnBoard();
+                            m_manager.Board.FlipSlot(firstSpot.Row, firstSpot.Col);
+                            secondSpot = m_manager.ComputerPlayers[k_FirstComputerPlayer].FindPair(firstSpot, m_manager.Board);
+                        }
+                    }
+                    
+                    m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
+
+                    foundPair = m_manager.ComputerPlayers[k_FirstComputerPlayer].Turn(firstSpot, secondSpot, m_manager.Board);
                 }
                 else
                 {
@@ -158,8 +178,6 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                     clearScreenAndPrintBoard();
                     secondSpot = getPlayerChoice();
                     m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
-                    clearScreenAndPrintBoard();
-                    System.Threading.Thread.Sleep(2000);
                     if (turn % 2 == 0)      
                     {
                         foundPair = m_manager.HumanPlayers[k_FirstHumanPlayer].Turn(firstSpot, secondSpot, m_manager.Board);
@@ -169,6 +187,10 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                         foundPair = m_manager.HumanPlayers[k_SecondHumanPlayer].Turn(firstSpot, secondSpot, m_manager.Board);
                     }
                 }
+
+
+                clearScreenAndPrintBoard();
+                System.Threading.Thread.Sleep(2000);
 
                 if (!foundPair)
                 {

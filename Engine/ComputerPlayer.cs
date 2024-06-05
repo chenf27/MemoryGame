@@ -12,14 +12,25 @@ namespace MemoryGameEngine
     {
         private int m_numOfPairs;
         private List<BrainCell> m_Brain;
-        private eComputerPlayerLevel m_CoputerLevel;
-        
-        private enum eComputerPlayerLevel 
+        private eComputerPlayerLevel m_ComputerLevel;
+        private const int k_CapacityOfBrainMedium = 14;
+
+        public enum eComputerPlayerLevel
         {
-            Easy, 
+            Easy,
             Medium,
             Hard
         }
+
+        public eComputerPlayerLevel ComputerLevel
+        {
+            get { return m_ComputerLevel; }
+            set { m_ComputerLevel = value; }
+        }
+
+
+
+
 
         public ComputerPlayer(int i_Difficulty)
         {
@@ -28,16 +39,16 @@ namespace MemoryGameEngine
             switch (i_Difficulty)
             {
                 case 1:
-                    m_CoputerLevel = eComputerPlayerLevel.Easy;
+                    m_ComputerLevel = eComputerPlayerLevel.Easy;
                     break;
                 case 2:
-                    m_CoputerLevel = eComputerPlayerLevel.Medium;
+                    m_ComputerLevel = eComputerPlayerLevel.Medium;
                     break;
                 case 3:
-                    m_CoputerLevel = eComputerPlayerLevel.Hard;
+                    m_ComputerLevel = eComputerPlayerLevel.Hard;
                     break;
                 default:
-                    m_CoputerLevel = eComputerPlayerLevel.Medium;
+                    m_ComputerLevel = eComputerPlayerLevel.Medium;
                     break;
             }
         }
@@ -81,27 +92,39 @@ namespace MemoryGameEngine
 
         public void AddBrainCell(SpotOnBoard i_SpotOnBoard, char i_content)
         {
-            BrainCell cell = new BrainCell(i_SpotOnBoard, i_content);
-            m_Brain.Add(cell);
-        }
-
-        public SpotOnBoard GetComputerChoice(Board i_Board)
-        {
-            //TODO IMPLENT TO FIND A RANDOM EMPTY SPOT ON BOARD AND ADD IT TO THE BRAIN
-            SpotOnBoard spotOnBoard = new SpotOnBoard();
-
-            return spotOnBoard;
-
-        }
-
-        public SpotOnBoard FindPair(char i_content, Board i_Board)
-        {
-            SpotOnBoard spotOnBoard = new SpotOnBoard ();
-            bool foundPair = false;
+            bool alreadyInBrain = false;
 
             foreach(BrainCell cell in m_Brain)
             {
-                if(i_content == cell.CardContent)
+                if (cell.CardContent == i_content && i_SpotOnBoard.Equals(cell.SpotOnBoard))
+                {
+                    alreadyInBrain = true;
+                    break;
+                }
+            }
+
+            if(!alreadyInBrain)
+            {
+                BrainCell newCell = new BrainCell(i_SpotOnBoard, i_content);
+                m_Brain.Add(newCell);
+            }
+
+            if(m_Brain.Count == k_CapacityOfBrainMedium)
+            {
+                m_Brain.RemoveAt(0);
+            }
+
+        }
+
+        public SpotOnBoard FindPair(SpotOnBoard i_SpotOnBoard, Board i_Board)
+        {
+            SpotOnBoard spotOnBoard = new SpotOnBoard ();
+            bool foundPair = false;
+            char content = i_Board.SlotContent(i_SpotOnBoard.Row, i_SpotOnBoard.Col);
+
+            foreach(BrainCell cell in m_Brain)
+            {
+                if(content == cell.CardContent && !cell.SpotOnBoard.Equals(i_SpotOnBoard))
                 {
                     spotOnBoard = cell.SpotOnBoard;
                     foundPair = true;
@@ -112,10 +135,8 @@ namespace MemoryGameEngine
 
             if(!foundPair)
             {
-                spotOnBoard = GetComputerChoice(i_Board);
+                spotOnBoard = i_Board.GenerateRandomUnflippedSpotOnBoard();
             }
-
-
 
             return spotOnBoard;
         }
@@ -138,10 +159,30 @@ namespace MemoryGameEngine
                 m_Brain = value;
             }
         }
-        public bool Turn()
+        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board io_Board)
         {
-            return false;
+            char firstSpotContent;
+            char secondSpotContent;
+            bool foundPair;
+
+            firstSpotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            secondSpotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
+            if (firstSpotContent == secondSpotContent)
+            {
+                m_numOfPairs++;
+                io_Board.NumOfPairsLeftInBoard--;
+                foundPair = true;
+            }
+            else
+            {
+                foundPair = false;
+                AddBrainCell(i_FirstSpot, firstSpotContent);
+                AddBrainCell(i_SecondSpot, secondSpotContent);
+            }
+
+            return foundPair;
         }
+
 
         public bool HasAPairInBrain(ref SpotOnBoard o_FirstSpot, ref SpotOnBoard o_SecondSpot)
         {
@@ -166,11 +207,15 @@ namespace MemoryGameEngine
                                 break;
                             }
                         }
-                        
+
                         o_SecondSpot = currentCell.SpotOnBoard;
+
+                        
                         m_Brain.RemoveAt(i); 
                         m_Brain.Remove(indexForFirstOccurence); 
+
                         foundPair = true;
+                        break; 
                     }
                 }
                 else

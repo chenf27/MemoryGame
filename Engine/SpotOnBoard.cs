@@ -26,5 +26,10 @@ namespace Engine
             m_Row = i_Row;
             m_Col = i_Col;
         }
+
+        public bool Equals(SpotOnBoard other) 
+        {
+            return m_Row == other.m_Row && m_Col == other.m_Col;
+        }
     }
 }
