@@ -11,7 +11,7 @@ namespace Engine
     {
         private Board m_Board;
         private HumanPlayer[] m_HumanPlayer;
-        private ComputerPlayer[] m_ComputerPlayer = null;
+        private ComputerPlayer[] m_ComputerPlayer;
 
         //public void FindWinner()
         //{
@@ -147,5 +147,10 @@ namespace Engine
             m_Board.InitializeBoard();
         }
 
+        public void EndUnsuccsessfulTurn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot)
+        {
+            m_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Row);
+            m_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Row);
+        }
     }
 }

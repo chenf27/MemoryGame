@@ -45,8 +45,6 @@ namespace MemoryGameEngine
             }
             else
             {
-                io_Board.FlipSlot(i_FirstSpot.Row, i_FirstSpot.Col);
-                io_Board.FlipSlot(i_SecondSpot.Row, i_SecondSpot.Col);
                 foundPair = false;
             }
 

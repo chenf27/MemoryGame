@@ -112,7 +112,7 @@ Please enter your name:");
         {
             int turn = 0;
             bool foundPair;
-            SpotOnBoard firstSpot, secondSpot;
+            SpotOnBoard firstSpot = new SpotOnBoard(), secondSpot = new SpotOnBoard();
 
             while (m_manager.Board.NumOfPairsLeftInBoard > 0)
             {
@@ -144,7 +144,7 @@ Please enter your name:");
                     m_manager.Board.FlipSlot(secondSpot.Row, secondSpot.Col);
                     clearScreenAndPrintBoard();
                     System.Threading.Thread.Sleep(2000);
-                    if (turn % 2 == 0)      //TODO switch to bool?
+                    if (turn % 2 == 0)      
                     {
                         foundPair = m_manager.HumanPlayers[k_FirstHumanPlayer].Turn(firstSpot, secondSpot, m_manager.Board);
                     }
@@ -157,6 +157,7 @@ Please enter your name:");
                 if (!foundPair)
                 {
                     turn++;
+                    m_manager.EndUnsuccsessfulTurn(firstSpot, secondSpot);
                 }
             }
         }
@@ -215,10 +216,11 @@ Please enter your name:");
             return spotOnBoard;
         }
 
-        public bool FinishGame()
+        public void FinishGame()
         {
-            return false;
-
+            Console.WriteLine("Score Board:");
+            Console.WriteLine(m_manager.HumanPlayers[k_FirstHumanPlayer].PlayerName + ": " + m_manager.HumanPlayers[k_FirstHumanPlayer].NumOfPairs + " pairs");
+            Console.WriteLine(m_manager.HumanPlayers[k_SecondHumanPlayer].PlayerName + ": " + m_manager.HumanPlayers[k_SecondHumanPlayer].NumOfPairs + " pairs");
 
         }
         private bool isInFrame(int i_Range, int i_UserInput)
@@ -226,7 +228,7 @@ Please enter your name:");
             return i_UserInput >= 0 && i_UserInput < i_Range;
         }
 
-        private void printBoard() //TODO change i and j to row and col
+        private void printBoard()
         {
             int numOfRowsInBoard = m_manager.Board.NumOfRowsInBoard;
             int numOfColsInBoard = m_manager.Board.NumOfColsInBoard;
@@ -261,7 +263,7 @@ Please enter your name:");
                     }
                     Console.Write("|");
                 }
-                //Console.Write("|");
+                
                 Console.WriteLine();
                 printPanelPartition(numOfColsInBoard);
             }
