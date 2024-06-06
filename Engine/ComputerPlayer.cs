@@ -1,5 +1,4 @@
-﻿using Engine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
@@ -10,10 +9,10 @@ namespace MemoryGameEngine
 {
     public struct ComputerPlayer<T>
     {
-        private int m_numOfPairs;
+        private int m_NumOfPairs;
         private List<BrainCell> m_Brain;
         private eComputerPlayerLevel m_ComputerLevel;
-        private const int k_CapacityOfBrainMedium = 14;
+        private const int k_CapacityOfBrainMedium = 20;
 
         public enum eComputerPlayerLevel
         {
@@ -30,7 +29,7 @@ namespace MemoryGameEngine
 
         public ComputerPlayer(int i_Difficulty)
         {
-            m_numOfPairs = 0;
+            m_NumOfPairs = 0;
             m_Brain = new List<BrainCell>();
             switch (i_Difficulty)
             {
@@ -92,7 +91,7 @@ namespace MemoryGameEngine
 
             foreach(BrainCell cell in m_Brain)
             {
-                if (cell.CardContent.Equals(i_content) && i_SpotOnBoard.Equals(cell.SpotOnBoard))
+                if (i_SpotOnBoard.IsEqual(cell.SpotOnBoard))
                 {
                     alreadyInBrain = true;
                     break;
@@ -104,23 +103,22 @@ namespace MemoryGameEngine
                 BrainCell newCell = new BrainCell(i_SpotOnBoard, i_content);
                 m_Brain.Add(newCell);
             }
+        }
 
-            if(m_Brain.Count == k_CapacityOfBrainMedium)
-            {
-                m_Brain.RemoveAt(0);
-            }
-
+        public void DeleteBrainCell(T i_content)
+        {
+            m_Brain.RemoveAll(brainCell => brainCell.CardContent.Equals(i_content));
         }
 
         public SpotOnBoard FindPair(SpotOnBoard i_SpotOnBoard, Board<T> i_Board)
         {
-            SpotOnBoard spotOnBoard = new SpotOnBoard ();
+            SpotOnBoard spotOnBoard = new SpotOnBoard();
             bool foundPair = false;
-            T content = i_Board.SlotContent(i_SpotOnBoard.Row, i_SpotOnBoard.Col);
+            T content = i_Board.CardContent(i_SpotOnBoard.Row, i_SpotOnBoard.Col);
 
             foreach(BrainCell cell in m_Brain)
             {
-                if(content.Equals(cell.CardContent) && !cell.SpotOnBoard.Equals(i_SpotOnBoard))
+                if(content.Equals(cell.CardContent) && !cell.SpotOnBoard.IsEqual(i_SpotOnBoard))
                 {
                     spotOnBoard = cell.SpotOnBoard;
                     foundPair = true;
@@ -134,15 +132,19 @@ namespace MemoryGameEngine
                 spotOnBoard = i_Board.GenerateRandomUnflippedSpotOnBoard();
             }
 
-
-
             return spotOnBoard;
         }
  
         public int NumOfPairs
         {
-            get { return m_numOfPairs; }
-            set { m_numOfPairs = value; }
+            get 
+            {
+                return m_NumOfPairs;
+            }
+            set
+            {
+                m_NumOfPairs = value;
+            }
         }
 
         public List<BrainCell> Brain
@@ -163,62 +165,142 @@ namespace MemoryGameEngine
             T secondSpotContent;
             bool foundPair;
 
-            firstSpotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
-            secondSpotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
+            firstSpotContent = io_Board.CardContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            secondSpotContent = io_Board.CardContent(i_SecondSpot.Row, i_SecondSpot.Col);
             if (firstSpotContent.Equals(secondSpotContent))
             {
-                m_numOfPairs++;
+                m_NumOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
                 foundPair = true;
             }
             else
             {
                 foundPair = false;
-                AddBrainCell(i_FirstSpot, firstSpotContent);
-                AddBrainCell(i_SecondSpot, secondSpotContent);
+                if(m_ComputerLevel != eComputerPlayerLevel.Easy)
+                {
+                    AddBrainCell(i_FirstSpot, firstSpotContent);
+                    AddBrainCell(i_SecondSpot, secondSpotContent);
+                }
             }
 
             return foundPair;
         }
 
+        public bool Play(out SpotOnBoard o_FirstSpot, out SpotOnBoard o_SecondSpot, Board<T> io_Board)
+        {
+            if(m_ComputerLevel == eComputerPlayerLevel.Easy)
+            {
+                EasyMode(out o_FirstSpot, out o_SecondSpot, io_Board);
+            }
+            else if(m_ComputerLevel == eComputerPlayerLevel.Medium)
+            {
+                MediumMode(out o_FirstSpot, out o_SecondSpot, io_Board);
+            }
+            else
+            {
+                HardMode(out o_FirstSpot, out o_SecondSpot, io_Board);
+            }
+
+            return Turn(o_FirstSpot, o_SecondSpot, io_Board);
+        }
+
+        public void EasyMode(out SpotOnBoard o_FirstSpot, out SpotOnBoard o_SecondSpot, Board<T> io_Board)
+        {
+            o_FirstSpot = io_Board.GenerateRandomUnflippedSpotOnBoard();
+            io_Board.FlipCard(o_FirstSpot.Row, o_FirstSpot.Col);
+            o_SecondSpot = io_Board.GenerateRandomUnflippedSpotOnBoard();
+            io_Board.FlipCard(o_SecondSpot.Row, o_SecondSpot.Col);
+        }
+
+        public void MediumMode(out SpotOnBoard o_FirstSpot, out SpotOnBoard o_SecondSpot, Board<T> io_Board)
+        {
+            o_FirstSpot = io_Board.GenerateRandomUnflippedSpotOnBoard();
+            io_Board.FlipCard(o_FirstSpot.Row, o_FirstSpot.Col);
+            o_SecondSpot = FindPair(o_FirstSpot, io_Board);
+            io_Board.FlipCard(o_SecondSpot.Row, o_SecondSpot.Col);
+        }
+        
+        public void HardMode(out SpotOnBoard o_FirstSpot, out SpotOnBoard o_SecondSpot, Board<T> io_Board)
+        {
+            o_FirstSpot = new SpotOnBoard();
+            o_SecondSpot= new SpotOnBoard();
+            bool foundPair = HasAPairInBrain(ref o_FirstSpot, ref o_SecondSpot);
+
+            if(foundPair)
+            {
+                io_Board.FlipCard(o_FirstSpot.Row, o_FirstSpot.Col);
+                io_Board.FlipCard(o_SecondSpot.Row, o_SecondSpot.Col);
+            }
+            else
+            {
+                MediumMode(out o_FirstSpot, out o_SecondSpot, io_Board);
+            }
+        }
+
+        //public bool HasAPairInBrain(ref SpotOnBoard o_FirstSpot, ref SpotOnBoard o_SecondSpot)
+        //{
+        //    Dictionary<T, int> contentCount = new Dictionary<T, int>();
+        //    BrainCell indexForFirstOccurence = new BrainCell();
+        //    bool foundPair = false;
+
+        //    for (int i = 0; i < m_Brain.Count; i++)
+        //    {
+        //        BrainCell currentCell = m_Brain[i];
+        //        if (contentCount.ContainsKey(currentCell.CardContent))
+        //        {
+        //            contentCount[currentCell.CardContent]++;
+        //            if (contentCount[currentCell.CardContent] == 2)
+        //            {
+        //                for (int j = 0; j < i; j++)
+        //                {
+        //                    if (m_Brain[j].CardContent.Equals(currentCell.CardContent))
+        //                    {
+        //                        indexForFirstOccurence = m_Brain[j];
+        //                        o_FirstSpot = m_Brain[j].SpotOnBoard;
+        //                        break;
+        //                    }
+        //                }
+
+        //                o_SecondSpot = currentCell.SpotOnBoard;
+
+
+        //                m_Brain.RemoveAt(i); 
+        //                m_Brain.Remove(indexForFirstOccurence); 
+
+        //                foundPair = true;
+        //                break; 
+        //            }
+        //        }
+        //        else
+        //        {
+        //            contentCount[currentCell.CardContent] = 1;
+        //        }
+        //    }
+
+        //    return foundPair;
+        //}
 
         public bool HasAPairInBrain(ref SpotOnBoard o_FirstSpot, ref SpotOnBoard o_SecondSpot)
         {
-            Dictionary<T, int> contentCount = new Dictionary<T, int>();
-            BrainCell indexForFirstOccurence = new BrainCell();
             bool foundPair = false;
 
-            for (int i = 0; i < m_Brain.Count; i++)
+            foreach (BrainCell cell1 in m_Brain)
             {
-                BrainCell currentCell = m_Brain[i];
-                if (contentCount.ContainsKey(currentCell.CardContent))
+                foreach (BrainCell cell2 in m_Brain)
                 {
-                    contentCount[currentCell.CardContent]++;
-                    if (contentCount[currentCell.CardContent] == 2)
+                    if (!ReferenceEquals(cell1, cell2) && cell1.CardContent.Equals(cell2.CardContent) && !cell1.SpotOnBoard.IsEqual(cell2.SpotOnBoard))
                     {
-                        for (int j = 0; j < i; j++)
-                        {
-                            if (m_Brain[j].CardContent.Equals(currentCell.CardContent))
-                            {
-                                indexForFirstOccurence = m_Brain[j];
-                                o_FirstSpot = m_Brain[j].SpotOnBoard;
-                                break;
-                            }
-                        }
-
-                        o_SecondSpot = currentCell.SpotOnBoard;
-
-                        
-                        m_Brain.RemoveAt(i); 
-                        m_Brain.Remove(indexForFirstOccurence); 
-
+                        o_FirstSpot = cell1.SpotOnBoard;
+                        o_SecondSpot = cell2.SpotOnBoard;
                         foundPair = true;
-                        break; 
+                        m_Brain.Remove(cell1);
+                        m_Brain.Remove(cell2);
+                        break;
                     }
                 }
-                else
+                if (foundPair)
                 {
-                    contentCount[currentCell.CardContent] = 1;
+                    break;
                 }
             }
 

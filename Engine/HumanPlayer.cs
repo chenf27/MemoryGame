@@ -1,32 +1,26 @@
-﻿using Engine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MemoryGameEngine
+﻿namespace MemoryGameEngine
 {
     public struct HumanPlayer<T>
     {
         private readonly string r_PlayerName;
-        private int m_numOfPairs;
+        private int m_NumOfPairs;
 
         public HumanPlayer(string i_playerName)
         {
             r_PlayerName = i_playerName;
-            m_numOfPairs = 0;
+            m_NumOfPairs = 0;
         }
 
         public string PlayerName
         {
-            get { return r_PlayerName; }
+            get
+            { return r_PlayerName; }
         }
 
         public int NumOfPairs
         {
-            get { return m_numOfPairs; }
-            set { m_numOfPairs = value; }
+            get { return m_NumOfPairs; }
+            set { m_NumOfPairs = value; }
         }
 
         public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board<T> io_Board)
@@ -35,11 +29,11 @@ namespace MemoryGameEngine
             T secondSlotContent;
             bool foundPair;
 
-            firstSlotContent = io_Board.SlotContent(i_FirstSpot.Row, i_FirstSpot.Col);
-            secondSlotContent = io_Board.SlotContent(i_SecondSpot.Row, i_SecondSpot.Col);
+            firstSlotContent = io_Board.CardContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            secondSlotContent = io_Board.CardContent(i_SecondSpot.Row, i_SecondSpot.Col);
             if (firstSlotContent.Equals(secondSlotContent))
             {
-                m_numOfPairs++;
+                m_NumOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
                 foundPair = true;
             }

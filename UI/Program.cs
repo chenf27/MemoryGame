@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ex02.ConsoleUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,11 +17,14 @@ namespace MemoryGameEngine
 
         private static void run()
         {
-            bool playAgain = false;
+            bool playAgain;
             int userInput;
-            
+
+            Console.WriteLine(@"Hello!
+Welcome to our Memory Game!!!");
             do
             {
+                playAgain = false;
                 GameFlowManager gameFlowManager = new GameFlowManager();
                 gameFlowManager.GameSetUp();
                 gameFlowManager.PlayGame();
@@ -33,6 +37,10 @@ Else - Exit");
                     if (userInput == 1)
                     {
                         playAgain = true;
+                    }
+                    else
+                    {
+                        Screen.Clear();
                     }
                 } 
             } while (playAgain);

@@ -1,36 +1,32 @@
-﻿using Engine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MemoryGameEngine
 {
-    public class Board<T>
+    public class Board<T> //DONE
     {
         private readonly int r_NumOfColsInBoard;
         private readonly int r_NumOfRowsInBoard;
-        private BoardSlot[,] m_Board;
-        private readonly int r_NumOfPairsAtTheStartOfTheGame;
+        private Card[,] m_Board;
         private int m_NumOfPairsLeftInBoard;
 
-        private struct BoardSlot
+        private struct Card
         {
-            private readonly T r_CardInSlot;
+            private readonly T r_CardContent;
             private bool m_CardFlippedByPlayer;
 
-            public BoardSlot(T i_CardInSlot)
+            public Card(T i_CardContent)
             {
-                r_CardInSlot = i_CardInSlot;
+                r_CardContent = i_CardContent;
                 m_CardFlippedByPlayer = false;
             }
 
-            public T CardInSlot
+            public T CardContent
             {
                 get
                 {
-                    return r_CardInSlot;
+                    return r_CardContent;
                 }
             }
 
@@ -47,51 +43,50 @@ namespace MemoryGameEngine
             }
         }
 
-        public Board(int i_numOfRowsInBoard, int i_numOfColsInBoard)
+        public Board(int i_NumOfRowsInBoard, int i_NumOfColsInBoard)
         {
-            r_NumOfRowsInBoard = i_numOfRowsInBoard;
-            r_NumOfColsInBoard = i_numOfColsInBoard;
-            m_Board = new BoardSlot[i_numOfRowsInBoard, i_numOfColsInBoard];
-            r_NumOfPairsAtTheStartOfTheGame = (i_numOfRowsInBoard * i_numOfColsInBoard) / 2;
-            m_NumOfPairsLeftInBoard = r_NumOfPairsAtTheStartOfTheGame;
+            r_NumOfRowsInBoard = i_NumOfRowsInBoard;
+            r_NumOfColsInBoard = i_NumOfColsInBoard;
+            m_Board = new Card[i_NumOfRowsInBoard, i_NumOfColsInBoard];
+            m_NumOfPairsLeftInBoard = (i_NumOfRowsInBoard * i_NumOfColsInBoard) / 2;
         }
 
         public void InitializeBoard(T[] i_ElementsForBoard)
         {
             int totalSlotsInBoard = r_NumOfRowsInBoard * r_NumOfColsInBoard;
+            int numOfPairsInBoard = totalSlotsInBoard / 2;
             T[] cardsDeck = new T[totalSlotsInBoard];
 
-            for (int i = 0; i < r_NumOfPairsAtTheStartOfTheGame; i++)
+            for (int i = 0; i < numOfPairsInBoard; i++)
             {
                 cardsDeck[2 * i] = i_ElementsForBoard[i];
                 cardsDeck[2 * i + 1] = i_ElementsForBoard[i];
             }
 
-            ShuffleDeckOfCards(cardsDeck);
-
+            shuffleDeckOfCards(cardsDeck);
             for (int rowIndex = 0, cardsDeckIndex = 0; rowIndex < r_NumOfRowsInBoard; rowIndex++)
             {
                 for (int colIndex = 0; colIndex < r_NumOfColsInBoard; colIndex++)
                 {
-                    m_Board[rowIndex, colIndex] = new BoardSlot(cardsDeck[cardsDeckIndex]);
+                    m_Board[rowIndex, colIndex] = new Card(cardsDeck[cardsDeckIndex]);
                     cardsDeckIndex++;
                 }
             }
         }
 
-        private void ShuffleDeckOfCards(T[] io_array)
+        private void shuffleDeckOfCards(T[] io_Array)
         {
             Random random = new Random();
-            int arrayLength = io_array.Length;
+            int arrayLength = io_Array.Length;
             T temporaryCardSymbol;
             int randomIndex;
 
             while (arrayLength > 1)
             {
                 randomIndex = random.Next(arrayLength--);
-                temporaryCardSymbol = io_array[arrayLength];
-                io_array[arrayLength] = io_array[randomIndex];
-                io_array[randomIndex] = temporaryCardSymbol;
+                temporaryCardSymbol = io_Array[arrayLength];
+                io_Array[arrayLength] = io_Array[randomIndex];
+                io_Array[randomIndex] = temporaryCardSymbol;
             }
         }
 
@@ -108,14 +103,6 @@ namespace MemoryGameEngine
             get
             {
                 return r_NumOfRowsInBoard;
-            }
-        }
-
-        public int NumOfPairsAtTheStartOfGame
-        {
-            get
-            {
-                return r_NumOfPairsAtTheStartOfTheGame;
             }
         }
 
@@ -136,12 +123,12 @@ namespace MemoryGameEngine
             return m_Board[i_Row, i_Col].CardFlippedByPlayer;
         }
 
-        public T SlotContent(int i_Row, int i_Col)
+        public T CardContent(int i_Row, int i_Col)
         {
-            return m_Board[i_Row, i_Col].CardInSlot;
+            return m_Board[i_Row, i_Col].CardContent;
         }
 
-        public void FlipSlot(int i_Row, int i_Col)
+        public void FlipCard(int i_Row, int i_Col)
         {
             m_Board[i_Row, i_Col].CardFlippedByPlayer = !m_Board[i_Row, i_Col].CardFlippedByPlayer;
         }
