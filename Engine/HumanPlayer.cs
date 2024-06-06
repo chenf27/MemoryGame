@@ -1,6 +1,6 @@
 ﻿namespace MemoryGameEngine
 {
-    public struct HumanPlayer<T>
+    public struct HumanPlayer<T> //DONE
     {
         private readonly string r_PlayerName;
         private int m_NumOfPairs;
@@ -14,32 +14,36 @@
         public string PlayerName
         {
             get
-            { return r_PlayerName; }
+            { 
+                return r_PlayerName;
+            }
         }
 
         public int NumOfPairs
         {
-            get { return m_NumOfPairs; }
-            set { m_NumOfPairs = value; }
+            get 
+            { 
+                return m_NumOfPairs; 
+            }
+            set 
+            { 
+                m_NumOfPairs = value; 
+            }
         }
 
-        public bool Turn(SpotOnBoard i_FirstSpot,SpotOnBoard i_SecondSpot, Board<T> io_Board)
+        public bool Turn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, Board<T> io_Board)
         {
-            T firstSlotContent;
-            T secondSlotContent;
-            bool foundPair;
+            T firstCardContent;
+            T secondCardContent;
+            bool foundPair = false;
 
-            firstSlotContent = io_Board.CardContent(i_FirstSpot.Row, i_FirstSpot.Col);
-            secondSlotContent = io_Board.CardContent(i_SecondSpot.Row, i_SecondSpot.Col);
-            if (firstSlotContent.Equals(secondSlotContent))
+            firstCardContent = io_Board.CardContent(i_FirstSpot.Row, i_FirstSpot.Col);
+            secondCardContent = io_Board.CardContent(i_SecondSpot.Row, i_SecondSpot.Col);
+            if (firstCardContent.Equals(secondCardContent))
             {
                 m_NumOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
                 foundPair = true;
-            }
-            else
-            {
-                foundPair = false;
             }
 
             return foundPair;

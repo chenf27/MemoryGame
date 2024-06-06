@@ -1,6 +1,6 @@
 ﻿namespace MemoryGameEngine
 {
-    public struct SpotOnBoard
+    public struct SpotOnBoard //DONE
     {
         private int m_Row;
         private int m_Col;
@@ -16,6 +16,7 @@
                 m_Row = value;
             }
         }
+
         public int Col
         { 
             get
@@ -27,16 +28,16 @@
                 m_Col = value;
             }
         }
+        
         public SpotOnBoard(int i_Row, int i_Col)
         {
             m_Row = i_Row;
             m_Col = i_Col;
         }
-
         
-        public bool IsEqual(SpotOnBoard i_Other) 
+        public bool IsEqual(SpotOnBoard i_OtherSpotOnBoard) 
         {
-            return m_Row == i_Other.m_Row && m_Col == i_Other.m_Col;
+            return m_Row == i_OtherSpotOnBoard.m_Row && m_Col == i_OtherSpotOnBoard.m_Col;
         }
     }
 }

@@ -6,7 +6,6 @@ namespace UI
 {
     internal class GameFlowManager
     {
-        //TODO TADPIS BETSEVA
         private GameManager<char> m_manager = new GameManager<char>(k_numOfPlayers);
         private const int k_numOfPlayers = 2;
         public const int k_MinFrameSize = 4;
@@ -15,32 +14,32 @@ namespace UI
         private const int k_SecondHumanPlayer = 1;
         private const int k_FirstComputerPlayer = 0;
         private const int k_DefaultComputerLevel = 2;
+        private const int k_MaximumNumberOfPairsInBoard = 18;
         private const char k_Exit = 'Q';
-        private const int k_NumOfLettersInABC = 26;
 
-        public void GameSetUp()
+        public void GameSetUp() //DONE
         {
             SetPlayersInfo();
             SetStartingBoard();
-        } //DONE
+        } 
 
-        private void SetStartingBoard() //TODO: MAYBE APPEND FORMAT FOR THE REPEATED MESSAGES?
+        private void SetStartingBoard() //DONE
         {
             int numOfColsFromUser = 0, numOfRowsFromUser = 0;
             bool validInputFromUser = false;
-            char[] elementsForBoard = new char[k_NumOfLettersInABC];
+            char[] elementsForBoard = new char[k_MaximumNumberOfPairsInBoard];
 
-            for (int i = 0; i < k_NumOfLettersInABC; i++)
+            for(int i = 0; i < k_MaximumNumberOfPairsInBoard; i++)
             {
                 elementsForBoard[i] = (char)('A' + i);
             }
 
             Console.WriteLine("Enter the size of the board, the size need to be between 4 and 6 but can't be overall of odd slots (5X5 is illegal)");
-            while (!validInputFromUser)
+            while(!validInputFromUser)
             {
                 numOfRowsFromUser = GetValidFrameForBoard("Enter the number of rows (4-6): ");
                 numOfColsFromUser = GetValidFrameForBoard("Enter the number of columns (4-6): ");
-                if (numOfColsFromUser == 5 && numOfRowsFromUser == 5)
+                if(numOfColsFromUser == 5 && numOfRowsFromUser == 5)
                 {
                     Console.WriteLine("Invalid number. Must be an even number of slots.");
                 }
@@ -53,15 +52,15 @@ namespace UI
             m_manager.CreateAndInitializeBoard(elementsForBoard, numOfRowsFromUser, numOfColsFromUser);
         }
 
-        private int GetValidFrameForBoard(string i_prompt) //TODO: APPEND FORMAT?
+        private int GetValidFrameForBoard(string i_MessageToUser) //DONE
         {
             int inputFromUser = 0;
             bool validInputFromUser = false;
-            //TODO APPEND FORMAT
-            while (!validInputFromUser)
+
+            while(!validInputFromUser)
             {
-                Console.Write(i_prompt);
-                if (int.TryParse(Console.ReadLine(), out inputFromUser) && inputFromUser >= k_MinFrameSize && inputFromUser <= k_MaxFrameSize)
+                Console.Write(i_MessageToUser);
+                if(int.TryParse(Console.ReadLine(), out inputFromUser) && inputFromUser >= k_MinFrameSize && inputFromUser <= k_MaxFrameSize)
                 {
                     validInputFromUser = true;
                 }
@@ -77,8 +76,7 @@ namespace UI
         private void SetPlayersInfo() //DONE
         {
             string playersName;
-            int computerPlayerLevel = 0; 
-            int userChoice;
+            int computerPlayerLevel; 
             bool validInputFromUser = false;
 
             Console.WriteLine("Please enter your name:");
@@ -86,12 +84,12 @@ namespace UI
             m_manager.CreateHumanPlayer(playersName); 
 
             Console.WriteLine("For Player vs Player press 1, for Player vs Computer press 2: ");
-            while (!validInputFromUser)
+            while(!validInputFromUser)
             {
-                if (int.TryParse(Console.ReadLine(), out userChoice))
+                if(int.TryParse(Console.ReadLine(), out int userChoice))
                 {
                     validInputFromUser = true;
-                    if (userChoice == 1)
+                    if(userChoice == 1)
                     {
                         Console.WriteLine("Please enter the name of the player: ");
                         playersName = Console.ReadLine();
@@ -101,7 +99,7 @@ namespace UI
                     {
                         Console.WriteLine(@"Please enter the computer's level
 Enter 1 for easy, 2 for medium and 3 for hard:");
-                        if (int.TryParse(Console.ReadLine(), out computerPlayerLevel) && (computerPlayerLevel >= 1 && computerPlayerLevel <= 3))
+                        if(int.TryParse(Console.ReadLine(), out computerPlayerLevel) && (computerPlayerLevel >= 1 && computerPlayerLevel <= 3))
                         {
                             m_manager.CreateComputerPlayer(computerPlayerLevel);        
                         }
@@ -124,39 +122,53 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
             }
         }
 
-        public void PlayGame()
+        public bool PlayGame()
         {
+            string playerName;
             bool foundPair;
+            bool computerPlayerTurn = false;
+            bool userPressedQ = false;
             SpotOnBoard firstSpot, secondSpot;
+            SpotOnBoard dummySpot = new SpotOnBoard(k_MaxFrameSize + 1, k_MaxFrameSize + 1);
 
             do
             {
+                computerPlayerTurn = m_manager.CurrentTurn == 2 && m_manager.HumanPlayerCounter < 2;
                 foundPair = false;
-                clearScreenAndPrintBoard();
-                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for 
-                if(m_manager.CurrentTurn == 2 && m_manager.HumanPlayerCounter < 2)
+                clearScreenAndPrintBoard(dummySpot, dummySpot, false);
+                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for writing phase
+                if(computerPlayerTurn)
                 {
                     foundPair = m_manager.ComputerPlayers[k_FirstComputerPlayer].Play(out firstSpot, out secondSpot, m_manager.Board);
                 }
                 else
                 {
-                    //NOT A MUST TO WRITE THE PLAYER NAME
-                    if (m_manager.CurrentTurn == 1) //TODO append player's name as format (use variable)
+                    if(m_manager.CurrentTurn == 1) 
                     {
-                        Console.Write(m_manager.HumanPlayers[k_FirstHumanPlayer].PlayerName);
+                        playerName = m_manager.HumanPlayers[k_FirstHumanPlayer].PlayerName;
                     }
                     else
                     {
-                        Console.Write(m_manager.HumanPlayers[k_SecondHumanPlayer].PlayerName);
+                        playerName = m_manager.HumanPlayers[k_SecondHumanPlayer].PlayerName;
                     }
 
-                    Console.WriteLine("'s turn: ");
-                    firstSpot = getPlayerChoice();
+                    Console.WriteLine("{0}'s turn: ", playerName);
+                    firstSpot = getPlayerChoice(ref userPressedQ);
+                    if(userPressedQ)
+                    {
+                        break;
+                    }
+
                     m_manager.Board.FlipCard(firstSpot.Row, firstSpot.Col);
-                    clearScreenAndPrintBoard();
-                    secondSpot = getPlayerChoice();
+                    clearScreenAndPrintBoard(firstSpot, dummySpot, computerPlayerTurn);
+                    secondSpot = getPlayerChoice(ref userPressedQ);
+                    if (userPressedQ)
+                    {
+                        break;
+                    }
+
                     m_manager.Board.FlipCard(secondSpot.Row, secondSpot.Col);
-                    if (m_manager.CurrentTurn == 1)
+                    if(m_manager.CurrentTurn == 1)
                     {
                         foundPair = m_manager.HumanPlayers[k_FirstHumanPlayer].Turn(firstSpot, secondSpot, m_manager.Board);
                     }
@@ -166,8 +178,7 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                     }
                 }
 
-
-                clearScreenAndPrintBoard();
+                clearScreenAndPrintBoard(firstSpot, secondSpot, computerPlayerTurn);
                 System.Threading.Thread.Sleep(2000);
 
                 if(!foundPair)
@@ -175,9 +186,9 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                     m_manager.EndUnsuccsessfulTurn(firstSpot, secondSpot);
                     if(m_manager.CurrentTurn == 1 && m_manager.HumanPlayerCounter == 1)
                     {
-                        //TODO SHORTER AND WRITE FUNCTION
-                        m_manager.ComputerPlayers[k_FirstComputerPlayer].AddBrainCell(firstSpot, m_manager.Board.CardContent(firstSpot.Row, firstSpot.Col));
-                        m_manager.ComputerPlayers[k_FirstComputerPlayer].AddBrainCell(secondSpot, m_manager.Board.CardContent(secondSpot.Row, secondSpot.Col));
+                        ComputerPlayer<char> computerPlayer = m_manager.ComputerPlayers[k_FirstComputerPlayer];
+                        addBrainCellToComputerPlayer(ref computerPlayer, firstSpot);
+                        addBrainCellToComputerPlayer(ref computerPlayer, secondSpot);
                     }
                 }
                 if(foundPair && m_manager.CurrentTurn == 1 && m_manager.HumanPlayerCounter == 1)
@@ -186,54 +197,66 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                 }
 
                 m_manager.TurnGenarator(foundPair);
-            } while (m_manager.Board.NumOfPairsLeftInBoard > 0);
+            } while(m_manager.Board.NumOfPairsLeftInBoard > 0);
+
+            return userPressedQ;
         }
 
-        private void clearScreenAndPrintBoard()
+        private void addBrainCellToComputerPlayer(ref ComputerPlayer<char> io_ComputerPlayer, SpotOnBoard i_CardToAdd)
+        {
+            io_ComputerPlayer.AddBrainCell(i_CardToAdd, m_manager.Board.CardContent(i_CardToAdd.Row, i_CardToAdd.Col));
+        }
+
+        private void clearScreenAndPrintBoard(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, bool i_ComputerTurn)
         {
             Screen.Clear();
-            printBoard();
+            printBoard(i_FirstSpot, i_SecondSpot, i_ComputerTurn);
         }
 
-        private SpotOnBoard getPlayerChoice()
+        private SpotOnBoard getPlayerChoice(ref bool o_UserPressedQ)
         {
             bool validInput = false;
             string slot;
-            char selectedColAsChar, selectedRowAsChar;
+            char selectedColAsChar;
+            int selectedRow;
             SpotOnBoard spotOnBoard = new SpotOnBoard();
 
-            Console.WriteLine("Please enter the slot you would like to flip (Format: A2)");
-            while (!validInput)
+            Console.WriteLine(@"Please enter the slot you would like to flip (Format: A2)
+To exit press Q");
+            while(!validInput)
             {
                 slot = Console.ReadLine();
-                if (slot == 'Q'.ToString())
+                if(slot.Length == 1 && char.ToUpper(slot[0]) == k_Exit)
                 {
-                    Environment.Exit(0);
+                    o_UserPressedQ = true;
+                    break;
                 }
 
-                //TODO A42 CATCH
-                if (slot.Length < 2)
+                if(slot.Length < 2)
                 {
-                    Console.WriteLine("Input error! Value too short, must enter a character and an integer");
+                    Console.WriteLine("Input error! Value too short, must enter a character and an integer.");
                 }
                 else
                 {
                     selectedColAsChar = slot[0];
-                    selectedRowAsChar = slot[1]; //TODO add input validation in case of mismatching format (e.g. "a")
-                    if (!char.IsDigit(slot[1]) || !char.IsLetter(selectedColAsChar))
+                    string rowPart = slot.Substring(1);
+
+                    if(!char.IsLetter(selectedColAsChar) || !int.TryParse(rowPart, out selectedRow))
                     {
-                        Console.WriteLine("Format error! Please enter a slot in the selected format.");
+                        Console.WriteLine("Format error! Please enter a slot in the correct format.");
                     }
                     else
                     {
-                        spotOnBoard.Row = selectedRowAsChar - '0' - 1;
+                        spotOnBoard.Row = selectedRow - 1;
                         selectedColAsChar = char.ToUpper(selectedColAsChar);
                         spotOnBoard.Col = selectedColAsChar - 'A';
-                        if (isInFrame(m_manager.Board.NumOfRowsInBoard, spotOnBoard.Row) && isInFrame(m_manager.Board.NumOfColsInBoard, spotOnBoard.Col))
+
+                        if(isInFrame(m_manager.Board.NumOfRowsInBoard, spotOnBoard.Row) &&
+                            isInFrame(m_manager.Board.NumOfColsInBoard, spotOnBoard.Col))
                         {
-                            if (m_manager.Board.IsSpotTaken(spotOnBoard.Row, spotOnBoard.Col))
+                            if(m_manager.Board.IsSpotTaken(spotOnBoard.Row, spotOnBoard.Col))
                             {
-                                Console.WriteLine("Input Error!, The slot you selected was already flipped");
+                                Console.WriteLine("Input Error! The slot you selected was already flipped.");
                             }
                             else
                             {
@@ -242,7 +265,7 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                         }
                         else
                         {
-                            Console.WriteLine("Range Error!, The slot you selected wasn't in range");
+                            Console.WriteLine("Range Error! The slot you selected wasn't in range.");
                         }
                     }
                 }
@@ -255,7 +278,7 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
         {
             Console.WriteLine("Score Board:");
             Console.WriteLine("{0}: {1} points ", m_manager.HumanPlayers[k_FirstHumanPlayer].PlayerName, m_manager.HumanPlayers[k_FirstHumanPlayer].NumOfPairs);
-            if (m_manager.HumanPlayerCounter == 2)
+            if(m_manager.HumanPlayerCounter == 2)
             {
                 Console.WriteLine("{0}: {1} points ", m_manager.HumanPlayers[k_SecondHumanPlayer].PlayerName, m_manager.HumanPlayers[k_SecondHumanPlayer].NumOfPairs);
             }
@@ -264,19 +287,20 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                 Console.WriteLine("Computer: {0} points", m_manager.ComputerPlayers[k_FirstComputerPlayer].NumOfPairs);
             }
         }
+
         private bool isInFrame(int i_Range, int i_UserInput)
         {
             return i_UserInput >= 0 && i_UserInput < i_Range;
         }
 
-        private void printBoard()
+        private void printBoard(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot, bool i_ComputerTurn)
         {
             int numOfRowsInBoard = m_manager.Board.NumOfRowsInBoard;
             int numOfColsInBoard = m_manager.Board.NumOfColsInBoard;
             SpotOnBoard spotToCheck = new SpotOnBoard();
 
             Console.Write("   ");
-            for (int i = 0; i < numOfColsInBoard; i++)
+            for(int i = 0; i < numOfColsInBoard; i++)
             {
                 char letter = (char)('A' + i);
                 Console.Write(@"  {0} ", letter);
@@ -285,16 +309,31 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
             Console.WriteLine();
             printPanelPartition(numOfColsInBoard);
 
-            for (int rowIndex = 0; rowIndex < numOfRowsInBoard; rowIndex++)
+            for(int rowIndex = 0; rowIndex < numOfRowsInBoard; rowIndex++)
             {
                 Console.Write(@" {0} ", rowIndex + 1);
                 Console.Write("|");
-                for (int colIndex = 0; colIndex < numOfColsInBoard; colIndex++)
+                for(int colIndex = 0; colIndex < numOfColsInBoard; colIndex++)
                 {
                     spotToCheck.Row = rowIndex;
                     spotToCheck.Col = colIndex;
 
-                    if (m_manager.Board.IsSpotTaken(spotToCheck.Row, spotToCheck.Col))
+                    if(i_ComputerTurn)
+                    {
+                        if(spotToCheck.IsEqual(i_FirstSpot) || spotToCheck.IsEqual(i_SecondSpot))
+                        {
+                            if (m_manager.Board.CardContent(i_FirstSpot.Row, i_FirstSpot.Col) == m_manager.Board.CardContent(i_SecondSpot.Row, i_SecondSpot.Col))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Green;
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                            }
+                        }
+                    }
+
+                    if(m_manager.Board.IsSpotTaken(spotToCheck.Row, spotToCheck.Col))
                     {
                         Console.Write(@" {0} ", m_manager.Board.CardContent(spotToCheck.Row, spotToCheck.Col));
                     }
@@ -302,6 +341,8 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                     {
                         Console.Write("   ");
                     }
+
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("|");
                 }
                 
@@ -314,7 +355,7 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
         {
             int lengthToPrint = i_numOfCols * 4 + 1;
             Console.Write("   ");
-            for (int i = 0; i < lengthToPrint; i++)
+            for(int i = 0; i < lengthToPrint; i++)
             {
                 Console.Write("=");
             }

@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MemoryGameEngine
 {
-    public struct ComputerPlayer<T>
+    public struct ComputerPlayer<T> //DONE
     {
         private int m_NumOfPairs;
         private List<BrainCell> m_Brain;
         private eComputerPlayerLevel m_ComputerLevel;
-        private const int k_CapacityOfBrainMedium = 20;
 
         public enum eComputerPlayerLevel
         {
@@ -91,7 +85,7 @@ namespace MemoryGameEngine
 
             foreach(BrainCell cell in m_Brain)
             {
-                if (i_SpotOnBoard.IsEqual(cell.SpotOnBoard))
+                if(i_SpotOnBoard.IsEqual(cell.SpotOnBoard))
                 {
                     alreadyInBrain = true;
                     break;
@@ -167,7 +161,7 @@ namespace MemoryGameEngine
 
             firstSpotContent = io_Board.CardContent(i_FirstSpot.Row, i_FirstSpot.Col);
             secondSpotContent = io_Board.CardContent(i_SecondSpot.Row, i_SecondSpot.Col);
-            if (firstSpotContent.Equals(secondSpotContent))
+            if(firstSpotContent.Equals(secondSpotContent))
             {
                 m_NumOfPairs++;
                 io_Board.NumOfPairsLeftInBoard--;
@@ -237,58 +231,15 @@ namespace MemoryGameEngine
             }
         }
 
-        //public bool HasAPairInBrain(ref SpotOnBoard o_FirstSpot, ref SpotOnBoard o_SecondSpot)
-        //{
-        //    Dictionary<T, int> contentCount = new Dictionary<T, int>();
-        //    BrainCell indexForFirstOccurence = new BrainCell();
-        //    bool foundPair = false;
-
-        //    for (int i = 0; i < m_Brain.Count; i++)
-        //    {
-        //        BrainCell currentCell = m_Brain[i];
-        //        if (contentCount.ContainsKey(currentCell.CardContent))
-        //        {
-        //            contentCount[currentCell.CardContent]++;
-        //            if (contentCount[currentCell.CardContent] == 2)
-        //            {
-        //                for (int j = 0; j < i; j++)
-        //                {
-        //                    if (m_Brain[j].CardContent.Equals(currentCell.CardContent))
-        //                    {
-        //                        indexForFirstOccurence = m_Brain[j];
-        //                        o_FirstSpot = m_Brain[j].SpotOnBoard;
-        //                        break;
-        //                    }
-        //                }
-
-        //                o_SecondSpot = currentCell.SpotOnBoard;
-
-
-        //                m_Brain.RemoveAt(i); 
-        //                m_Brain.Remove(indexForFirstOccurence); 
-
-        //                foundPair = true;
-        //                break; 
-        //            }
-        //        }
-        //        else
-        //        {
-        //            contentCount[currentCell.CardContent] = 1;
-        //        }
-        //    }
-
-        //    return foundPair;
-        //}
-
         public bool HasAPairInBrain(ref SpotOnBoard o_FirstSpot, ref SpotOnBoard o_SecondSpot)
         {
             bool foundPair = false;
 
-            foreach (BrainCell cell1 in m_Brain)
+            foreach(BrainCell cell1 in m_Brain)
             {
-                foreach (BrainCell cell2 in m_Brain)
+                foreach(BrainCell cell2 in m_Brain)
                 {
-                    if (!ReferenceEquals(cell1, cell2) && cell1.CardContent.Equals(cell2.CardContent) && !cell1.SpotOnBoard.IsEqual(cell2.SpotOnBoard))
+                    if(!ReferenceEquals(cell1, cell2) && cell1.CardContent.Equals(cell2.CardContent) && !cell1.SpotOnBoard.IsEqual(cell2.SpotOnBoard))
                     {
                         o_FirstSpot = cell1.SpotOnBoard;
                         o_SecondSpot = cell2.SpotOnBoard;
@@ -298,7 +249,7 @@ namespace MemoryGameEngine
                         break;
                     }
                 }
-                if (foundPair)
+                if(foundPair)
                 {
                     break;
                 }

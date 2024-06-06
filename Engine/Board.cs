@@ -57,16 +57,16 @@ namespace MemoryGameEngine
             int numOfPairsInBoard = totalSlotsInBoard / 2;
             T[] cardsDeck = new T[totalSlotsInBoard];
 
-            for (int i = 0; i < numOfPairsInBoard; i++)
+            for(int i = 0; i < numOfPairsInBoard; i++)
             {
                 cardsDeck[2 * i] = i_ElementsForBoard[i];
                 cardsDeck[2 * i + 1] = i_ElementsForBoard[i];
             }
 
             shuffleDeckOfCards(cardsDeck);
-            for (int rowIndex = 0, cardsDeckIndex = 0; rowIndex < r_NumOfRowsInBoard; rowIndex++)
+            for(int rowIndex = 0, cardsDeckIndex = 0; rowIndex < r_NumOfRowsInBoard; rowIndex++)
             {
-                for (int colIndex = 0; colIndex < r_NumOfColsInBoard; colIndex++)
+                for(int colIndex = 0; colIndex < r_NumOfColsInBoard; colIndex++)
                 {
                     m_Board[rowIndex, colIndex] = new Card(cardsDeck[cardsDeckIndex]);
                     cardsDeckIndex++;
@@ -78,15 +78,15 @@ namespace MemoryGameEngine
         {
             Random random = new Random();
             int arrayLength = io_Array.Length;
-            T temporaryCardSymbol;
+            T temporaryCardContentHolder;
             int randomIndex;
 
-            while (arrayLength > 1)
+            while(arrayLength > 1)
             {
                 randomIndex = random.Next(arrayLength--);
-                temporaryCardSymbol = io_Array[arrayLength];
+                temporaryCardContentHolder = io_Array[arrayLength];
                 io_Array[arrayLength] = io_Array[randomIndex];
-                io_Array[randomIndex] = temporaryCardSymbol;
+                io_Array[randomIndex] = temporaryCardContentHolder;
             }
         }
 
@@ -142,7 +142,7 @@ namespace MemoryGameEngine
             {
                 for(int colIndex = 0; colIndex < NumOfColsInBoard; colIndex++)
                 {
-                    if (!(m_Board[rowIndex, colIndex].CardFlippedByPlayer))
+                    if(!(m_Board[rowIndex, colIndex].CardFlippedByPlayer))
                     {
                         unflippedSpotsOnBoard.Add(new SpotOnBoard(rowIndex, colIndex));
                     }

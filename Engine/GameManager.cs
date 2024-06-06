@@ -1,8 +1,7 @@
 ﻿namespace MemoryGameEngine
 {
-    public class GameManager<T>
+    public class GameManager<T> //DONE
     {
-        //TODO : ADD PLAYER ID
         private Board<T> m_Board;
         private HumanPlayer<T>[] m_HumanPlayers;
         private ComputerPlayer<T>[] m_ComputerPlayers;
@@ -11,14 +10,12 @@
         private int m_NumOfPlayers;
         private int m_CurrentTurn = 1;
 
-        public GameManager(int i_NumOfPlayers) //TODO : DYMANIC REALOOC
+        public GameManager(int i_NumOfPlayers)
         {
-            m_HumanPlayers = new HumanPlayer<T>[i_NumOfPlayers];
-            m_ComputerPlayers = new ComputerPlayer<T>[i_NumOfPlayers];
             m_NumOfPlayers = i_NumOfPlayers;
         }
 
-        public Board<T> Board //DONE
+        public Board<T> Board
         {
             get
             {
@@ -30,17 +27,27 @@
             }
         }
 
-        public void CreateHumanPlayer(string i_Name) //DONE
+        public void CreateHumanPlayer(string i_Name)
         {
+            if(m_HumanPlayers == null)
+            {
+                m_HumanPlayers = new HumanPlayer<T>[m_NumOfPlayers];
+            }
+
             m_HumanPlayers[m_HumanPlayersCounter++] = new HumanPlayer<T>(i_Name);
         }
 
-        public void CreateComputerPlayer(int i_Level) //DONE
+        public void CreateComputerPlayer(int i_Level)
         {
+            if(m_ComputerPlayers == null)
+            {
+                m_ComputerPlayers = new ComputerPlayer<T>[m_NumOfPlayers];
+            }
+
             m_ComputerPlayers[m_ComputerPlayersCounter++] = new ComputerPlayer<T>(i_Level);
         }
 
-        public HumanPlayer<T>[] HumanPlayers //DONE
+        public HumanPlayer<T>[] HumanPlayers
         {
             get
             {
@@ -52,7 +59,7 @@
             }
         }
 
-        public ComputerPlayer<T>[] ComputerPlayers //DONE
+        public ComputerPlayer<T>[] ComputerPlayers
         {
             get 
             {
@@ -64,19 +71,17 @@
             }
         }
         
-       //DONE
         public void CreateAndInitializeBoard(T[] i_ElementsForBoard, int i_NumOfRows, int i_NumOfCols)
         {
             m_Board = new Board<T>(i_NumOfRows, i_NumOfCols);
             m_Board.InitializeBoard(i_ElementsForBoard);
         }
 
-        public void EndUnsuccsessfulTurn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot) //DONE
+        public void EndUnsuccsessfulTurn(SpotOnBoard i_FirstSpot, SpotOnBoard i_SecondSpot)
         {
             m_Board.FlipCard(i_FirstSpot.Row, i_FirstSpot.Col);
             m_Board.FlipCard(i_SecondSpot.Row, i_SecondSpot.Col);
         }
-        //DONE
 
         public int HumanPlayerCounter
         { 
@@ -88,8 +93,7 @@
             {
                 m_HumanPlayersCounter = value;
             }
-        }
-        //DONE
+        }       
 
         public int ComputerPlayerCounter
         {
@@ -102,8 +106,7 @@
                 m_ComputerPlayersCounter = value;
             }
         }
-
-        //DONE
+        
         public int NumOfPlayers
         {
             get
@@ -128,12 +131,11 @@
             }
         }
 
-        //STILL NEED SOME THINKING
         public void TurnGenarator(bool i_FoundPair)
         {
-            if (!i_FoundPair)
+            if(!i_FoundPair)
             {
-                if (m_CurrentTurn == m_NumOfPlayers)
+                if(m_CurrentTurn == m_NumOfPlayers)
                 {
                     m_CurrentTurn = 1;
                 }

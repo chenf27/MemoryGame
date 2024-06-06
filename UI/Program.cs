@@ -1,14 +1,10 @@
 ﻿using Ex02.ConsoleUtils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UI;
 
 namespace MemoryGameEngine
 {
-    public class Program
+    public class Program //DONE
     {
         public static void Main()
         {
@@ -18,7 +14,7 @@ namespace MemoryGameEngine
         private static void run()
         {
             bool playAgain;
-            int userInput;
+            bool endGame;
 
             Console.WriteLine(@"Hello!
 Welcome to our Memory Game!!!");
@@ -27,23 +23,29 @@ Welcome to our Memory Game!!!");
                 playAgain = false;
                 GameFlowManager gameFlowManager = new GameFlowManager();
                 gameFlowManager.GameSetUp();
-                gameFlowManager.PlayGame();
+                endGame = gameFlowManager.PlayGame();
+                if(endGame)
+                {
+                    break;
+                }
+
                 gameFlowManager.FinishGame();
                 Console.WriteLine(@"Please select from the options below:
 1 - Another game
 Else - Exit");
-                if (int.TryParse(Console.ReadLine(), out userInput))
+                if(int.TryParse(Console.ReadLine(), out int userInput))
                 {
-                    if (userInput == 1)
+                    if(userInput == 1)
                     {
                         playAgain = true;
-                    }
-                    else
-                    {
                         Screen.Clear();
                     }
                 } 
-            } while (playAgain);
+            } while(playAgain);
+
+            Console.WriteLine(@"Thank you for playing our game! 
+Press Enter to exit...");
+            Console.ReadLine();
         }
     }
 }
