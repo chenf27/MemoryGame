@@ -4,7 +4,7 @@ using UI;
 
 namespace MemoryGameEngine
 {
-    public class Program //DONE
+    public class Program
     {
         public static void Main()
         {

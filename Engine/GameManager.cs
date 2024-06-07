@@ -1,6 +1,6 @@
 ﻿namespace MemoryGameEngine
 {
-    public class GameManager<T> //DONE
+    public class GameManager<T>
     {
         private Board<T> m_Board;
         private HumanPlayer<T>[] m_HumanPlayers;

@@ -17,13 +17,13 @@ namespace UI
         private const int k_MaximumNumberOfPairsInBoard = 18;
         private const char k_Exit = 'Q';
 
-        public void GameSetUp() //DONE
+        public void GameSetUp()
         {
             SetPlayersInfo();
             SetStartingBoard();
         } 
 
-        private void SetStartingBoard() //DONE
+        private void SetStartingBoard() 
         {
             int numOfColsFromUser = 0, numOfRowsFromUser = 0;
             bool validInputFromUser = false;
@@ -52,7 +52,7 @@ namespace UI
             m_manager.CreateAndInitializeBoard(elementsForBoard, numOfRowsFromUser, numOfColsFromUser);
         }
 
-        private int GetValidFrameForBoard(string i_MessageToUser) //DONE
+        private int GetValidFrameForBoard(string i_MessageToUser)
         {
             int inputFromUser = 0;
             bool validInputFromUser = false;
@@ -73,7 +73,7 @@ namespace UI
             return inputFromUser;
         }
 
-        private void SetPlayersInfo() //DONE
+        private void SetPlayersInfo() 
         {
             string playersName;
             int computerPlayerLevel; 
@@ -136,7 +136,6 @@ Enter 1 for easy, 2 for medium and 3 for hard:");
                 computerPlayerTurn = m_manager.CurrentTurn == 2 && m_manager.HumanPlayerCounter < 2;
                 foundPair = false;
                 clearScreenAndPrintBoard(dummySpot, dummySpot, false);
-                Console.WriteLine(m_manager.Board.NumOfPairsLeftInBoard);     //TODO DELETE LATER!!!!!!!!!!! only for writing phase
                 if(computerPlayerTurn)
                 {
                     foundPair = m_manager.ComputerPlayers[k_FirstComputerPlayer].Play(out firstSpot, out secondSpot, m_manager.Board);

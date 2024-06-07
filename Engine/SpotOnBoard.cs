@@ -1,6 +1,6 @@
 ﻿namespace MemoryGameEngine
 {
-    public struct SpotOnBoard //DONE
+    public struct SpotOnBoard
     {
         private int m_Row;
         private int m_Col;

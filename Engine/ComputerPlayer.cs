@@ -2,7 +2,7 @@
 
 namespace MemoryGameEngine
 {
-    public struct ComputerPlayer<T> //DONE
+    public struct ComputerPlayer<T>
     {
         private int m_NumOfPairs;
         private List<BrainCell> m_Brain;

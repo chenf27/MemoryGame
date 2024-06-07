@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MemoryGameEngine
 {
-    public class Board<T> //DONE
+    public class Board<T>
     {
         private readonly int r_NumOfColsInBoard;
         private readonly int r_NumOfRowsInBoard;

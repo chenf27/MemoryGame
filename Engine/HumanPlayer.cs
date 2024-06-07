@@ -1,6 +1,6 @@
 ﻿namespace MemoryGameEngine
 {
-    public struct HumanPlayer<T> //DONE
+    public struct HumanPlayer<T> 
     {
         private readonly string r_PlayerName;
         private int m_NumOfPairs;
